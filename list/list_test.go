@@ -2,45 +2,46 @@ package list
 
 import (
 	"github.com/SealNTibbers/gremory/testutils"
+	"github.com/SealNTibbers/gremory/utils"
 	"testing"
 )
 
 func TestCreateNode(t *testing.T) {
-	newIntNode := CreateNode(42)
+	newIntNode := CreateNode(&utils.ValueHolder{42})
 	testutils.ASSERT_EQ(t, newIntNode.GetValue(), 42)
 
-	newStrNode := CreateNode("test")
+	newStrNode := CreateNode(&utils.ValueHolder{"test"})
 	testutils.ASSERT_EQ(t, newStrNode.GetValue(), "test")
 
-	newBoolNode := CreateNode(true)
+	newBoolNode := CreateNode(&utils.ValueHolder{true})
 	testutils.ASSERT_EQ(t, newBoolNode.GetValue(), true)
 }
 
 func TestPushFront(t *testing.T) {
 	list := new(List)
-	list.PushFront(23)
+	list.PushFront(&utils.ValueHolder{23})
 	testutils.ASSERT_EQ(t, list.head.GetValue(), 23)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(1))
-	list.PushFront(33)
+	list.PushFront(&utils.ValueHolder{33})
 	testutils.ASSERT_EQ(t, list.head.GetValue(), 33)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(2))
 }
 
 func TestPushBack(t *testing.T) {
 	list := new(List)
-	list.PushBack(23)
+	list.PushBack(&utils.ValueHolder{23})
 	testutils.ASSERT_EQ(t, list.head.GetValue(), 23)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(1))
-	list.PushBack(33)
+	list.PushBack(&utils.ValueHolder{33})
 	testutils.ASSERT_EQ(t, list.head.next.GetValue(), 33)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(2))
 }
 
 func TestPopBack(t *testing.T) {
 	list := new(List)
-	list.PushBack(23)
-	list.PushBack(33)
-	list.PushBack(43)
+	list.PushBack(&utils.ValueHolder{23})
+	list.PushBack(&utils.ValueHolder{33})
+	list.PushBack(&utils.ValueHolder{43})
 	testutils.ASSERT_EQ(t, list.Size(), uint64(3))
 	testutils.ASSERT_EQ(t, list.Back(), 43)
 	list.PopBack()
@@ -50,9 +51,9 @@ func TestPopBack(t *testing.T) {
 
 func TestPopFront(t *testing.T) {
 	list := new(List)
-	list.PushBack(23)
-	list.PushBack(33)
-	list.PushBack(43)
+	list.PushBack(&utils.ValueHolder{23})
+	list.PushBack(&utils.ValueHolder{33})
+	list.PushBack(&utils.ValueHolder{43})
 	testutils.ASSERT_EQ(t, list.Size(), uint64(3))
 	testutils.ASSERT_EQ(t, list.Front(), 23)
 	list.PopFront()
@@ -62,18 +63,18 @@ func TestPopFront(t *testing.T) {
 
 func TestGet(t *testing.T) {
 	list := new(List)
-	list.PushBack(23)
-	list.PushBack(33)
+	list.PushBack(&utils.ValueHolder{23})
+	list.PushBack(&utils.ValueHolder{33})
 	testutils.ASSERT_EQ(t, list.At(0), 23)
 	testutils.ASSERT_EQ(t, list.At(1), 33)
 }
 
 func TestInsertAt(t *testing.T) {
 	list := new(List)
-	list.PushBack(23)
-	list.PushBack(33)
-	list.PushBack(34)
-	list.InsertAt(11, 2)
+	list.PushBack(&utils.ValueHolder{23})
+	list.PushBack(&utils.ValueHolder{33})
+	list.PushBack(&utils.ValueHolder{34})
+	list.InsertAt(&utils.ValueHolder{11}, 2)
 	testutils.ASSERT_EQ(t, list.At(0), 23)
 	testutils.ASSERT_EQ(t, list.At(1), 33)
 	testutils.ASSERT_EQ(t, list.At(2), 11)
@@ -82,10 +83,10 @@ func TestInsertAt(t *testing.T) {
 
 func TestDelete(t *testing.T) {
 	list := new(List)
-	list.PushBack(23)
-	list.PushBack(33)
-	list.PushBack(34)
-	list.PushBack(11)
+	list.PushBack(&utils.ValueHolder{23})
+	list.PushBack(&utils.ValueHolder{33})
+	list.PushBack(&utils.ValueHolder{34})
+	list.PushBack(&utils.ValueHolder{11})
 	list.Delete(34)
 	testutils.ASSERT_EQ(t, list.At(0), 23)
 	testutils.ASSERT_EQ(t, list.At(1), 33)
@@ -101,9 +102,9 @@ func TestDelete(t *testing.T) {
 
 func TestSelect(t *testing.T) {
 	list := new(List)
-	list.PushBack(1)
-	list.PushBack(2)
-	list.PushBack(3)
+	list.PushBack(&utils.ValueHolder{1})
+	list.PushBack(&utils.ValueHolder{2})
+	list.PushBack(&utils.ValueHolder{3})
 	selectList := list.Select(func(each *ListNode) bool {
 		if each.GetValue().(int) > 1 {
 			return true
@@ -116,12 +117,12 @@ func TestSelect(t *testing.T) {
 
 func TestCollect(t *testing.T) {
 	list := new(List)
-	list.PushBack(1)
-	list.PushBack(2)
-	list.PushBack(3)
-	collectList := list.Collect(func(each *ListNode) interface{} {
-		each.Data.Data = each.GetValue().(int) * 10
-		return each.GetValue()
+	list.PushBack(&utils.ValueHolder{1})
+	list.PushBack(&utils.ValueHolder{2})
+	list.PushBack(&utils.ValueHolder{3})
+	collectList := list.Collect(func(each *ListNode) utils.CollectionObject {
+		each.Data.SetValue(each.GetValue().(int) * 10)
+		return each.Data
 	})
 	testutils.ASSERT_EQ(t, collectList.At(0), 10)
 	testutils.ASSERT_EQ(t, collectList.At(1), 20)
@@ -130,33 +131,33 @@ func TestCollect(t *testing.T) {
 
 func TestBegin(t *testing.T) {
 	list := new(List)
-	list.PushBack(1)
+	list.PushBack(&utils.ValueHolder{1})
 	testutils.ASSERT_EQ(t, list.Front(), 1)
-	list.PushBack(2)
+	list.PushBack(&utils.ValueHolder{2})
 	testutils.ASSERT_EQ(t, list.Front(), 1)
-	list.PushBack(3)
+	list.PushBack(&utils.ValueHolder{3})
 	testutils.ASSERT_EQ(t, list.Front(), 1)
-	list.PushFront(4)
+	list.PushFront(&utils.ValueHolder{4})
 	testutils.ASSERT_EQ(t, list.Front(), 4)
 }
 
 func TestEnd(t *testing.T) {
 	list := new(List)
-	list.PushBack(1)
+	list.PushBack(&utils.ValueHolder{1})
 	testutils.ASSERT_EQ(t, list.Back(), 1)
-	list.PushBack(2)
+	list.PushBack(&utils.ValueHolder{2})
 	testutils.ASSERT_EQ(t, list.Back(), 2)
-	list.PushBack(3)
+	list.PushBack(&utils.ValueHolder{3})
 	testutils.ASSERT_EQ(t, list.Back(), 3)
-	list.PushFront(4)
+	list.PushFront(&utils.ValueHolder{4})
 	testutils.ASSERT_EQ(t, list.Back(), 3)
 }
 
 func TestInclides(t *testing.T) {
 	list := new(List)
-	list.PushBack(1)
-	list.PushBack(2)
-	list.PushBack(3)
+	list.PushBack(&utils.ValueHolder{1})
+	list.PushBack(&utils.ValueHolder{2})
+	list.PushBack(&utils.ValueHolder{3})
 	testutils.ASSERT_EQ(t, list.Includes(2), true)
 	testutils.ASSERT_EQ(t, list.Includes(22), false)
 }

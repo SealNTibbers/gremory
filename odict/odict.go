@@ -13,12 +13,10 @@ func NewODict() *ODict {
 	return odict
 }
 
-func (d *ODict) AddPair(key interface{}, value interface{}) {
+func (d *ODict) AddPair(key CollectionObject, value CollectionObject) {
 	node := NewDictNode()
-	node.Key = new(ValueHolder)
-	node.Key.Data = key
-	node.Data = new(ValueHolder)
-	node.Data.Data = value
+	node.Key = key
+	node.Data = value
 
 	d.Add(node)
 }
@@ -68,7 +66,7 @@ func (d *ODict) At(key interface{}) interface{} {
 	}
 }
 
-func (d *ODict) Collect(collectAction func(each TreeNodeInterface) (interface{}, interface{})) *ODict {
+func (d *ODict) Collect(collectAction func(each TreeNodeInterface) (CollectionObject, CollectionObject)) *ODict {
 	result := NewODict()
 	doAction := func(e TreeNodeInterface) {
 		result.AddPair(collectAction(e))
@@ -81,7 +79,7 @@ func (d *ODict) Select(selectAction func(each TreeNodeInterface) bool) *ODict {
 	result := NewODict()
 	doAction := func(e TreeNodeInterface) {
 		if selectAction(e) {
-			result.AddPair(e.(*KeyValueNode).GetKey(), e.(*KeyValueNode).GetValue())
+			result.AddPair(e.GetKey(), e.GetData())
 		}
 	}
 	d.Do(doAction)

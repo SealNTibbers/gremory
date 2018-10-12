@@ -21,8 +21,9 @@ var nilNodeSingle = new(NilNode)
 type TreeNodeInterface interface {
 	IsNilNode() bool
 	IsNotNilNode() bool
-	GetKey() interface{}
-	GetData() *ValueHolder
+	GetKey() CollectionObject
+	GetData() CollectionObject
+	GetKeyValue() interface{}
 	GetValue() interface{}
 	GetColor() NodeColor
 
@@ -64,11 +65,14 @@ func (*NilNode) GetValue() interface{} {
 	panic("implement me")
 }
 
-func (*NilNode) GetKey() interface{} {
+func (*NilNode) GetKey() CollectionObject {
+	panic("implement me")
+}
+func (*NilNode) GetKeyValue() interface{} {
 	panic("implement me")
 }
 
-func (*NilNode) GetData() *ValueHolder {
+func (*NilNode) GetData() CollectionObject {
 	panic("implement me")
 }
 
@@ -125,7 +129,7 @@ func (*NilNode) setParent(nodeInterface TreeNodeInterface) {
 }
 
 type TreeNode struct {
-	Data  *ValueHolder
+	Data  CollectionObject
 	color NodeColor
 
 	left   TreeNodeInterface
@@ -165,7 +169,7 @@ func (node *TreeNode) GetValue() interface{} {
 	return node.Data.GetValue()
 }
 
-func (node *TreeNode) GetData() *ValueHolder {
+func (node *TreeNode) GetData() CollectionObject {
 	return node.Data
 }
 
@@ -495,7 +499,11 @@ func (node *ValueNode) isGreaterThan(nodeInterface TreeNodeInterface) bool {
 func (node *ValueNode) setValueFrom(nodeInterface TreeNodeInterface) {
 }
 
-func (*ValueNode) GetKey() interface{} {
+func (*ValueNode) GetKey() CollectionObject {
+	return nil
+}
+
+func (*ValueNode) GetKeyValue() interface{} {
 	return nil
 }
 
@@ -505,7 +513,7 @@ func (node *ValueNode) acceptNode(rv TreeNodeInterface) {
 
 type KeyValueNode struct {
 	*TreeNode
-	Key *ValueHolder
+	Key CollectionObject
 }
 
 func NewDictNode() *KeyValueNode {
@@ -547,7 +555,11 @@ func (node *KeyValueNode) acceptNode(rv TreeNodeInterface) {
 	node.Data = rv.(*KeyValueNode).Data
 }
 
-func (node *KeyValueNode) GetKey() interface{} {
+func (node *KeyValueNode) GetKey() CollectionObject {
+	return node.Key
+}
+
+func (node *KeyValueNode) GetKeyValue() interface{} {
 	return node.Key.GetValue()
 }
 
@@ -599,9 +611,15 @@ func GetNode(root TreeNodeInterface, key interface{}) (TreeNodeInterface, bool) 
 }
 
 type Comparable interface {
-	Less(rv Comparable) bool
-	Greater(rv Comparable) bool
-	Equal(rv Comparable) bool
+	Less(rv CollectionObject) bool
+	Greater(rv CollectionObject) bool
+	Equal(rv CollectionObject) bool
+}
+
+type CollectionObject interface {
+	Comparable
+	GetValue() interface{}
+	SetValue(value interface{})
 }
 
 type ValueHolder struct {
@@ -616,7 +634,7 @@ func (holder *ValueHolder) SetValue(value interface{}) {
 	holder.Data = value
 }
 
-func (lv *ValueHolder) Less(rv Comparable) bool {
+func (lv *ValueHolder) Less(rv CollectionObject) bool {
 	lvInt, lvIntOk := lv.Data.(int)
 	rvInt, rvIntOk := rv.(*ValueHolder).Data.(int)
 	if lvIntOk && rvIntOk {
@@ -632,7 +650,7 @@ func (lv *ValueHolder) Less(rv Comparable) bool {
 	panic("This ValueHolder only for basic types.")
 }
 
-func (lv *ValueHolder) Greater(rv Comparable) bool {
+func (lv *ValueHolder) Greater(rv CollectionObject) bool {
 	lvInt, lvIntOk := lv.Data.(int)
 	rvInt, rvIntOk := rv.(*ValueHolder).Data.(int)
 	if lvIntOk && rvIntOk {
@@ -648,7 +666,7 @@ func (lv *ValueHolder) Greater(rv Comparable) bool {
 	panic("This ValueHolder only for basic types.")
 }
 
-func (lv *ValueHolder) Equal(rv Comparable) bool {
+func (lv *ValueHolder) Equal(rv CollectionObject) bool {
 	lvInt, lvIntOk := lv.Data.(int)
 	rvInt, rvIntOk := rv.(*ValueHolder).Data.(int)
 	if lvIntOk && rvIntOk {

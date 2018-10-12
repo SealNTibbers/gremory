@@ -15,10 +15,9 @@ func NewOSet() *OSet {
 	return oset
 }
 
-func (s *OSet) AddValue(value interface{}) {
+func (s *OSet) AddValue(value CollectionObject) {
 	node := NewRBNode()
-	node.Data = new(ValueHolder)
-	node.Data.Data = value
+	node.Data = value
 	s.Add(node)
 }
 
@@ -57,7 +56,7 @@ func (s *OSet) Do(action func(each TreeNodeInterface)) {
 	s.walk(visitor)
 }
 
-func (s *OSet) Collect(collectAction func(each TreeNodeInterface) interface{}) *OSet {
+func (s *OSet) Collect(collectAction func(each TreeNodeInterface) CollectionObject) *OSet {
 	result := NewOSet()
 	doAction := func(e TreeNodeInterface) {
 		result.AddValue(collectAction(e))
@@ -70,7 +69,7 @@ func (s *OSet) Select(selectAction func(each TreeNodeInterface) bool) *OSet {
 	result := NewOSet()
 	doAction := func(e TreeNodeInterface) {
 		if selectAction(e) {
-			result.AddValue(e.GetValue())
+			result.AddValue(e.GetData())
 		}
 	}
 	s.Do(doAction)

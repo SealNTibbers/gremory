@@ -2,10 +2,10 @@ package list
 
 import "github.com/SealNTibbers/gremory/utils"
 
-type DataType = utils.ValueHolder
+type DataType = utils.CollectionObject
 
 type ListNode struct {
-	Data *DataType
+	Data DataType
 	next *ListNode
 	prev *ListNode
 	head *ListNode
@@ -17,11 +17,9 @@ type List struct {
 	tail *ListNode
 }
 
-func CreateNode(data interface{}) *ListNode {
+func CreateNode(data utils.CollectionObject) *ListNode {
 	node := new(ListNode)
-	dataHolder := new(utils.ValueHolder)
-	dataHolder.Data = data
-	node.Data = dataHolder
+	node.Data = data
 	node.next = nil
 	node.prev = nil
 	return node
@@ -31,10 +29,10 @@ func (node *ListNode) GetValue() interface{} {
 	if node == nil {
 		return nil
 	}
-	return node.Data.Data
+	return node.Data.GetValue()
 }
 
-func (l *List) PushFront(data interface{}) {
+func (l *List) PushFront(data utils.CollectionObject) {
 	newNode := CreateNode(data)
 	if l.head == nil {
 		l.head = newNode
@@ -104,7 +102,7 @@ func (l *List) DeleteAll() {
 	l.head = nil
 }
 
-func (l *List) PushBack(data interface{}) {
+func (l *List) PushBack(data utils.CollectionObject) {
 	temp := l.head
 	newNode := CreateNode(data)
 	if l.head == nil {
@@ -171,10 +169,10 @@ func (l *List) At(index uint64) interface{} {
 		currentNode = currentNode.next
 		counter = counter + 1
 	}
-	return currentNode.Data.Data
+	return currentNode.Data.GetValue()
 }
 
-func (l *List) InsertAt(data interface{}, index uint64) {
+func (l *List) InsertAt(data utils.CollectionObject, index uint64) {
 	if l.head == nil || index > l.Size() {
 		return
 	}
@@ -211,14 +209,14 @@ func (l *List) Select(selectAction func(each *ListNode) bool) *List {
 	result := new(List)
 	doAction := func(e *ListNode) {
 		if selectAction(e) {
-			result.PushBack(e.GetValue())
+			result.PushBack(e.Data)
 		}
 	}
 	l.Do(doAction)
 	return result
 }
 
-func (l *List) Collect(collectAction func(each *ListNode) interface{}) *List {
+func (l *List) Collect(collectAction func(each *ListNode) utils.CollectionObject) *List {
 	result := new(List)
 	doAction := func(e *ListNode) {
 		result.PushBack(collectAction(e))
