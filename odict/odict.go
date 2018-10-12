@@ -1,6 +1,6 @@
 package odict
 
-import . "github.com/gremory/utils"
+import . "github.com/SealNTibbers/gremory/utils"
 
 type ODict struct {
 	root TreeNodeInterface

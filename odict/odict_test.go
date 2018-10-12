@@ -2,8 +2,8 @@ package odict
 
 import (
 	"fmt"
-	"github.com/gremory/testutils"
-	"github.com/gremory/utils"
+	"github.com/SealNTibbers/gremory/testutils"
+	"github.com/SealNTibbers/gremory/utils"
 	"testing"
 )
 

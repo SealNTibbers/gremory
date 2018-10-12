@@ -1,7 +1,7 @@
 package oset
 
 import (
-	. "github.com/gremory/utils"
+	. "github.com/SealNTibbers/gremory/utils"
 )
 
 type OSet struct {

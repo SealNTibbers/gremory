@@ -1,7 +1,7 @@
 package list
 
 import (
-	"github.com/gremory/testutils"
+	"github.com/SealNTibbers/gremory/testutils"
 	"testing"
 )
 
