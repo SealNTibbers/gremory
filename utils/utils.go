@@ -467,12 +467,12 @@ func (v *DoVisitor) Visit(node TreeNodeInterface) {
 	v.Visit(node.getRight())
 }
 
-type RBTreeNode struct {
+type ValueNode struct {
 	*TreeNode
 }
 
-func NewRBNode() *RBTreeNode {
-	node := new(RBTreeNode)
+func NewRBNode() *ValueNode {
+	node := new(ValueNode)
 	node.TreeNode = new(TreeNode)
 	node.parent = GetNilNode()
 	node.right = GetNilNode()
@@ -480,36 +480,36 @@ func NewRBNode() *RBTreeNode {
 	return node
 }
 
-func (node *RBTreeNode) isEqualTo(nodeInterface TreeNodeInterface) bool {
-	return node.Data.Equal(nodeInterface.(*RBTreeNode).Data)
+func (node *ValueNode) isEqualTo(nodeInterface TreeNodeInterface) bool {
+	return node.Data.Equal(nodeInterface.(*ValueNode).Data)
 }
 
-func (node *RBTreeNode) isLesserThan(nodeInterface TreeNodeInterface) bool {
-	return node.Data.Less(nodeInterface.(*RBTreeNode).Data)
+func (node *ValueNode) isLesserThan(nodeInterface TreeNodeInterface) bool {
+	return node.Data.Less(nodeInterface.(*ValueNode).Data)
 }
 
-func (node *RBTreeNode) isGreaterThan(nodeInterface TreeNodeInterface) bool {
-	return node.Data.Greater(nodeInterface.(*RBTreeNode).Data)
+func (node *ValueNode) isGreaterThan(nodeInterface TreeNodeInterface) bool {
+	return node.Data.Greater(nodeInterface.(*ValueNode).Data)
 }
 
-func (node *RBTreeNode) setValueFrom(nodeInterface TreeNodeInterface) {
+func (node *ValueNode) setValueFrom(nodeInterface TreeNodeInterface) {
 }
 
-func (*RBTreeNode) GetKey() interface{} {
+func (*ValueNode) GetKey() interface{} {
 	return nil
 }
 
-func (node *RBTreeNode) acceptNode(rv TreeNodeInterface) {
-	node.Data = rv.(*RBTreeNode).Data
+func (node *ValueNode) acceptNode(rv TreeNodeInterface) {
+	node.Data = rv.(*ValueNode).Data
 }
 
-type DictRBTreeNode struct {
+type KeyValueNode struct {
 	*TreeNode
 	Key *ValueHolder
 }
 
-func NewDictNode() *DictRBTreeNode {
-	node := new(DictRBTreeNode)
+func NewDictNode() *KeyValueNode {
+	node := new(KeyValueNode)
 	node.TreeNode = new(TreeNode)
 	node.parent = GetNilNode()
 	node.right = GetNilNode()
@@ -517,42 +517,42 @@ func NewDictNode() *DictRBTreeNode {
 	return node
 }
 
-func (node *DictRBTreeNode) isEqualTo(nodeInterface TreeNodeInterface) bool {
+func (node *KeyValueNode) isEqualTo(nodeInterface TreeNodeInterface) bool {
 	if nodeInterface.IsNilNode() {
 		return false
 	}
-	return node.Key.Equal(nodeInterface.(*DictRBTreeNode).Key)
+	return node.Key.Equal(nodeInterface.(*KeyValueNode).Key)
 }
 
-func (node *DictRBTreeNode) isLesserThan(nodeInterface TreeNodeInterface) bool {
+func (node *KeyValueNode) isLesserThan(nodeInterface TreeNodeInterface) bool {
 	if nodeInterface.IsNilNode() {
 		return false
 	}
-	return node.Key.Less(nodeInterface.(*DictRBTreeNode).Key)
+	return node.Key.Less(nodeInterface.(*KeyValueNode).Key)
 }
 
-func (node *DictRBTreeNode) isGreaterThan(nodeInterface TreeNodeInterface) bool {
+func (node *KeyValueNode) isGreaterThan(nodeInterface TreeNodeInterface) bool {
 	if nodeInterface.IsNilNode() {
 		return false
 	}
-	return node.Key.Greater(nodeInterface.(*DictRBTreeNode).Key)
+	return node.Key.Greater(nodeInterface.(*KeyValueNode).Key)
 }
 
-func (node *DictRBTreeNode) setValueFrom(nodeInterface TreeNodeInterface) {
-	node.Data = nodeInterface.(*DictRBTreeNode).Data
+func (node *KeyValueNode) setValueFrom(nodeInterface TreeNodeInterface) {
+	node.Data = nodeInterface.(*KeyValueNode).Data
 }
 
-func (node *DictRBTreeNode) acceptNode(rv TreeNodeInterface) {
-	node.Key = rv.(*DictRBTreeNode).Key
-	node.Data = rv.(*DictRBTreeNode).Data
+func (node *KeyValueNode) acceptNode(rv TreeNodeInterface) {
+	node.Key = rv.(*KeyValueNode).Key
+	node.Data = rv.(*KeyValueNode).Data
 }
 
-func (node *DictRBTreeNode) GetKey() interface{} {
+func (node *KeyValueNode) GetKey() interface{} {
 	return node.Key.GetValue()
 }
 
 func internalLookup(parent TreeNodeInterface, this TreeNodeInterface, key interface{}, dir Direction) (TreeNodeInterface, bool, Direction) {
-	tmpNode := new(DictRBTreeNode)
+	tmpNode := new(KeyValueNode)
 	tmpNode.Key = &ValueHolder{key}
 	switch {
 	case this == nil:

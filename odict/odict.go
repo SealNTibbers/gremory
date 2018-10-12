@@ -23,8 +23,8 @@ func (d *ODict) AddPair(key interface{}, value interface{}) {
 	d.Add(node)
 }
 
-func (d *ODict) Add(node *DictRBTreeNode) {
-	d.root = InsertBST(d.root, node).(*DictRBTreeNode)
+func (d *ODict) Add(node *KeyValueNode) {
+	d.root = InsertBST(d.root, node).(*KeyValueNode)
 	d.size = d.size + 1
 	d.root = FixAddRBTree(d.root, node)
 }
@@ -81,7 +81,7 @@ func (d *ODict) Select(selectAction func(each TreeNodeInterface) bool) *ODict {
 	result := NewODict()
 	doAction := func(e TreeNodeInterface) {
 		if selectAction(e) {
-			result.AddPair(e.(*DictRBTreeNode).GetKey(), e.(*DictRBTreeNode).GetValue())
+			result.AddPair(e.(*KeyValueNode).GetKey(), e.(*KeyValueNode).GetValue())
 		}
 	}
 	d.Do(doAction)
@@ -93,7 +93,7 @@ func (d *ODict) Includes(key interface{}) bool {
 		return false
 	}
 	selectAction := func(each TreeNodeInterface) bool {
-		if each.(*DictRBTreeNode).Key.GetValue() == key {
+		if each.(*KeyValueNode).Key.GetValue() == key {
 			return true
 		}
 		return false

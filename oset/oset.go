@@ -22,8 +22,8 @@ func (s *OSet) AddValue(value interface{}) {
 	s.Add(node)
 }
 
-func (s *OSet) Add(node *RBTreeNode) {
-	s.root = InsertBST(s.root, node).(*RBTreeNode)
+func (s *OSet) Add(node *ValueNode) {
+	s.root = InsertBST(s.root, node).(*ValueNode)
 	s.size = s.size + 1
 	s.root = FixAddRBTree(s.root, node)
 }
@@ -82,7 +82,7 @@ func (s *OSet) Includes(data interface{}) bool {
 		return false
 	}
 	selectAction := func(each TreeNodeInterface) bool {
-		if each.(*RBTreeNode).Data.GetValue() == data {
+		if each.(*ValueNode).Data.GetValue() == data {
 			return true
 		}
 		return false
