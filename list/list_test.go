@@ -36,6 +36,30 @@ func TestPushBack(t *testing.T) {
 	testutils.ASSERT_EQ(t, list.Size(), uint64(2))
 }
 
+func TestPopBack(t *testing.T) {
+	list := new(List)
+	list.PushBack(23)
+	list.PushBack(33)
+	list.PushBack(43)
+	testutils.ASSERT_EQ(t, list.Size(), uint64(3))
+	testutils.ASSERT_EQ(t, list.Back(), 43)
+	list.PopBack()
+	testutils.ASSERT_EQ(t, list.Size(), uint64(2))
+	testutils.ASSERT_EQ(t, list.Back(), 33)
+}
+
+func TestPopFront(t *testing.T) {
+	list := new(List)
+	list.PushBack(23)
+	list.PushBack(33)
+	list.PushBack(43)
+	testutils.ASSERT_EQ(t, list.Size(), uint64(3))
+	testutils.ASSERT_EQ(t, list.Front(), 23)
+	list.PopFront()
+	testutils.ASSERT_EQ(t, list.Size(), uint64(2))
+	testutils.ASSERT_EQ(t, list.Front(), 33)
+}
+
 func TestGet(t *testing.T) {
 	list := new(List)
 	list.PushBack(23)
@@ -81,7 +105,7 @@ func TestSelect(t *testing.T) {
 	list.PushBack(2)
 	list.PushBack(3)
 	selectList := list.Select(func(each *ListNode) bool {
-		if each.Data.Data.(int) > 1 {
+		if each.GetValue().(int) > 1 {
 			return true
 		}
 		return false
@@ -96,7 +120,7 @@ func TestCollect(t *testing.T) {
 	list.PushBack(2)
 	list.PushBack(3)
 	collectList := list.Collect(func(each *ListNode) interface{} {
-		each.Data.Data = each.Data.Data.(int) * 10
+		each.Data.Data = each.GetValue().(int) * 10
 		return each.GetValue()
 	})
 	testutils.ASSERT_EQ(t, collectList.At(0), 10)
@@ -107,25 +131,25 @@ func TestCollect(t *testing.T) {
 func TestBegin(t *testing.T) {
 	list := new(List)
 	list.PushBack(1)
-	testutils.ASSERT_EQ(t, list.Begin().GetValue(), 1)
+	testutils.ASSERT_EQ(t, list.Front(), 1)
 	list.PushBack(2)
-	testutils.ASSERT_EQ(t, list.Begin().GetValue(), 1)
+	testutils.ASSERT_EQ(t, list.Front(), 1)
 	list.PushBack(3)
-	testutils.ASSERT_EQ(t, list.Begin().GetValue(), 1)
+	testutils.ASSERT_EQ(t, list.Front(), 1)
 	list.PushFront(4)
-	testutils.ASSERT_EQ(t, list.Begin().GetValue(), 4)
+	testutils.ASSERT_EQ(t, list.Front(), 4)
 }
 
 func TestEnd(t *testing.T) {
 	list := new(List)
 	list.PushBack(1)
-	testutils.ASSERT_EQ(t, list.End().GetValue(), 1)
+	testutils.ASSERT_EQ(t, list.Back(), 1)
 	list.PushBack(2)
-	testutils.ASSERT_EQ(t, list.End().GetValue(), 2)
+	testutils.ASSERT_EQ(t, list.Back(), 2)
 	list.PushBack(3)
-	testutils.ASSERT_EQ(t, list.End().GetValue(), 3)
+	testutils.ASSERT_EQ(t, list.Back(), 3)
 	list.PushFront(4)
-	testutils.ASSERT_EQ(t, list.End().GetValue(), 3)
+	testutils.ASSERT_EQ(t, list.Back(), 3)
 }
 
 func TestInclides(t *testing.T) {

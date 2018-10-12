@@ -34,14 +34,6 @@ func (node *ListNode) GetValue() interface{} {
 	return node.Data.Data
 }
 
-func (l *List) Begin() *ListNode {
-	return l.head
-}
-
-func (l *List) End() *ListNode {
-	return l.tail
-}
-
 func (l *List) PushFront(data interface{}) {
 	newNode := CreateNode(data)
 	if l.head == nil {
@@ -126,6 +118,34 @@ func (l *List) PushBack(data interface{}) {
 	temp.next = newNode
 	newNode.prev = temp
 	l.tail = newNode
+}
+
+func (l *List) PopBack() {
+	back := l.tail
+	l.tail = back.prev
+	back.prev.next = nil
+	back = nil
+}
+
+func (l *List) Front() interface{} {
+	if l.head == nil {
+		return nil
+	}
+	return l.head.GetValue()
+}
+
+func (l *List) Back() interface{} {
+	if l.tail == nil {
+		return nil
+	}
+	return l.tail.GetValue()
+}
+
+func (l *List) PopFront() {
+	front := l.head
+	l.head = front.next
+	front.next.prev = nil
+	front = nil
 }
 
 func (l *List) Size() uint64 {
