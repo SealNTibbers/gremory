@@ -87,7 +87,7 @@ func TestDelete(t *testing.T) {
 	list.PushBack(&utils.ValueHolder{33})
 	list.PushBack(&utils.ValueHolder{34})
 	list.PushBack(&utils.ValueHolder{11})
-	list.Delete(34)
+	list.Delete(&utils.ValueHolder{34})
 	testutils.ASSERT_EQ(t, list.At(0), 23)
 	testutils.ASSERT_EQ(t, list.At(1), 33)
 	testutils.ASSERT_EQ(t, list.At(2), 11)

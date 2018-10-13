@@ -43,14 +43,14 @@ func (l *List) PushFront(data utils.CollectionObject) {
 	l.head = newNode
 }
 
-func (l *List) Delete(data interface{}) {
+func (l *List) Delete(data utils.CollectionObject) {
 	if l.head == nil {
 		return
 	}
 	currentElement := l.head
 	var removedNode *ListNode
 	for currentElement.next != nil {
-		if currentElement.GetValue() == data {
+		if currentElement.GetValue() == data.GetValue() {
 			removedNode = currentElement
 		}
 		currentElement = currentElement.next
