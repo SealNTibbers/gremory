@@ -56,6 +56,22 @@ func TestDo(t *testing.T) {
 	})
 }
 
+func TestReverseDo(t *testing.T) {
+	dict := NewODict()
+	dict.AddPair(&ValueHolder{1}, &ValueHolder{'a'})
+	dict.AddPair(&ValueHolder{2}, &ValueHolder{'b'})
+	dict.AddPair(&ValueHolder{3}, &ValueHolder{'c'})
+	dict.AddPair(&ValueHolder{4}, &ValueHolder{'d'})
+	counter := 3
+	expectedKeys := []int{1, 2, 3, 4}
+	expectedValues := []int32{97, 98, 99, 100}
+	dict.ReverseDo(func(each TreeNodeInterface) {
+		testutils.ASSERT_EQ(t, each.GetKeyValue().(int), expectedKeys[counter])
+		testutils.ASSERT_EQ(t, each.GetValue(), expectedValues[counter])
+		counter = counter - 1
+	})
+}
+
 func TestSelect(t *testing.T) {
 	dict := NewODict()
 	dict.AddPair(&ValueHolder{1}, &ValueHolder{'a'})

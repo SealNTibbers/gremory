@@ -48,6 +48,14 @@ func (d *ODict) walk(visitor Visitor) {
 	visitor.Visit(d.root)
 }
 
+func (d *ODict) ReverseDo(action func(each TreeNodeInterface)) {
+	if d.root == nil {
+		return
+	}
+	visitor := &ReverseDoVisitor{Action: action}
+	d.walk(visitor)
+}
+
 func (d *ODict) Do(action func(each TreeNodeInterface)) {
 	if d.root == nil {
 		return

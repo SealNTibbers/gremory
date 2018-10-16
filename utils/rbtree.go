@@ -471,6 +471,19 @@ func (v *DoVisitor) Visit(node TreeNodeInterface) {
 	v.Visit(node.getRight())
 }
 
+type ReverseDoVisitor struct {
+	Action func(each TreeNodeInterface)
+}
+
+func (v *ReverseDoVisitor) Visit(node TreeNodeInterface) {
+	if node.IsNilNode() {
+		return
+	}
+	v.Visit(node.getRight())
+	v.Action(node)
+	v.Visit(node.getLeft())
+}
+
 type ValueNode struct {
 	*TreeNode
 }

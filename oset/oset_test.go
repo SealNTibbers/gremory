@@ -23,6 +23,23 @@ func TestDo(t *testing.T) {
 	})
 }
 
+func TestReverseDo(t *testing.T) {
+	set := NewOSet()
+	set.AddValue(&ValueHolder{3})
+	set.AddValue(&ValueHolder{2})
+	set.AddValue(&ValueHolder{3})
+	set.AddValue(&ValueHolder{15})
+	set.AddValue(&ValueHolder{20})
+	set.AddValue(&ValueHolder{1})
+	set.AddValue(&ValueHolder{3})
+	counter := 4
+	expectedValues := []int{20, 15, 3, 2, 1}
+	set.Do(func(each TreeNodeInterface) {
+		testutils.ASSERT_EQ(t, each.GetValue().(int), expectedValues[counter])
+		counter = counter - 1
+	})
+}
+
 func TestSelect(t *testing.T) {
 	set := NewOSet()
 	set.AddValue(&ValueHolder{7})

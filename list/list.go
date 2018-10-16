@@ -193,6 +193,18 @@ func (l *List) InsertAt(data utils.CollectionObject, index uint64) {
 	}
 }
 
+func (l *List) ReverseDo(action func(each *ListNode)) {
+	if l.head == nil {
+		return
+	}
+	currentElement := l.tail
+	action(currentElement)
+	for currentElement.prev != nil {
+		currentElement = currentElement.prev
+		action(currentElement)
+	}
+}
+
 func (l *List) Do(action func(each *ListNode)) {
 	if l.head == nil {
 		return
