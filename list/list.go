@@ -118,11 +118,11 @@ func (l *List) PushBack(data utils.CollectionObject) {
 	l.tail = newNode
 }
 
-func (l *List) PopBack() {
+func (l *List) PopBack() interface{} {
 	back := l.tail
 	l.tail = back.prev
 	back.prev.next = nil
-	back = nil
+	return back.Data.GetValue()
 }
 
 func (l *List) Front() interface{} {
@@ -139,11 +139,11 @@ func (l *List) Back() interface{} {
 	return l.tail.GetValue()
 }
 
-func (l *List) PopFront() {
+func (l *List) PopFront() interface{} {
 	front := l.head
 	l.head = front.next
 	front.next.prev = nil
-	front = nil
+	return front.Data.GetValue()
 }
 
 func (l *List) Size() uint64 {

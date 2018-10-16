@@ -44,7 +44,8 @@ func TestPopBack(t *testing.T) {
 	list.PushBack(&utils.ValueHolder{43})
 	testutils.ASSERT_EQ(t, list.Size(), uint64(3))
 	testutils.ASSERT_EQ(t, list.Back(), 43)
-	list.PopBack()
+	back := list.PopBack()
+	testutils.ASSERT_EQ(t, back, 43)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(2))
 	testutils.ASSERT_EQ(t, list.Back(), 33)
 }
@@ -56,7 +57,8 @@ func TestPopFront(t *testing.T) {
 	list.PushBack(&utils.ValueHolder{43})
 	testutils.ASSERT_EQ(t, list.Size(), uint64(3))
 	testutils.ASSERT_EQ(t, list.Front(), 23)
-	list.PopFront()
+	front := list.PopFront()
+	testutils.ASSERT_EQ(t, front, 23)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(2))
 	testutils.ASSERT_EQ(t, list.Front(), 33)
 }
