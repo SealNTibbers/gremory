@@ -1,8 +1,8 @@
 package list
 
-import "github.com/SealNTibbers/gremory/utils"
+import . "github.com/SealNTibbers/gremory/utils"
 
-type DataType = utils.CollectionObject
+type DataType = CollectionObject
 
 type ListNode struct {
 	Data DataType
@@ -13,11 +13,18 @@ type ListNode struct {
 }
 
 type List struct {
-	head *ListNode
-	tail *ListNode
+	head           *ListNode
+	tail           *ListNode
+	valueGenerator func(interface{}) CollectionObject
 }
 
-func CreateNode(data utils.CollectionObject) *ListNode {
+func NewSmartList(valueGenerator func(interface{}) CollectionObject) *List {
+	list := new(List)
+	list.valueGenerator = valueGenerator
+	return list
+}
+
+func CreateNode(data CollectionObject) *ListNode {
 	node := new(ListNode)
 	node.Data = data
 	node.next = nil
@@ -32,7 +39,14 @@ func (node *ListNode) GetValue() interface{} {
 	return node.Data.GetValue()
 }
 
-func (l *List) PushFront(data utils.CollectionObject) {
+func (l *List) PushFront(data interface{}) {
+	if l.valueGenerator == nil {
+		return
+	}
+	l.PushFrontValueHolder(l.valueGenerator(data))
+}
+
+func (l *List) PushFrontValueHolder(data CollectionObject) {
 	newNode := CreateNode(data)
 	if l.head == nil {
 		l.head = newNode
@@ -43,7 +57,14 @@ func (l *List) PushFront(data utils.CollectionObject) {
 	l.head = newNode
 }
 
-func (l *List) Delete(data utils.CollectionObject) {
+func (l *List) Delete(data interface{}) {
+	if l.valueGenerator == nil {
+		return
+	}
+	l.DeleteValueHolder(l.valueGenerator(data))
+}
+
+func (l *List) DeleteValueHolder(data CollectionObject) {
 	if l.head == nil {
 		return
 	}
@@ -102,7 +123,14 @@ func (l *List) DeleteAll() {
 	l.head = nil
 }
 
-func (l *List) PushBack(data utils.CollectionObject) {
+func (l *List) PushBack(data interface{}) {
+	if l.valueGenerator == nil {
+		return
+	}
+	l.PushBackValueHolder(l.valueGenerator(data))
+}
+
+func (l *List) PushBackValueHolder(data CollectionObject) {
 	temp := l.head
 	newNode := CreateNode(data)
 	if l.head == nil {
@@ -172,7 +200,14 @@ func (l *List) At(index uint64) interface{} {
 	return currentNode.Data.GetValue()
 }
 
-func (l *List) InsertAt(data utils.CollectionObject, index uint64) {
+func (l *List) InsertAt(data CollectionObject, index uint64) {
+	if l.valueGenerator == nil {
+		return
+	}
+	l.InsertAtValueHolder(l.valueGenerator(data), index)
+}
+
+func (l *List) InsertAtValueHolder(data CollectionObject, index uint64) {
 	if l.head == nil || index > l.Size() {
 		return
 	}
@@ -221,17 +256,17 @@ func (l *List) Select(selectAction func(each *ListNode) bool) *List {
 	result := new(List)
 	doAction := func(e *ListNode) {
 		if selectAction(e) {
-			result.PushBack(e.Data)
+			result.PushBackValueHolder(e.Data)
 		}
 	}
 	l.Do(doAction)
 	return result
 }
 
-func (l *List) Collect(collectAction func(each *ListNode) utils.CollectionObject) *List {
+func (l *List) Collect(collectAction func(each *ListNode) CollectionObject) *List {
 	result := new(List)
 	doAction := func(e *ListNode) {
-		result.PushBack(collectAction(e))
+		result.PushBackValueHolder(collectAction(e))
 	}
 	l.Do(doAction)
 	return result
