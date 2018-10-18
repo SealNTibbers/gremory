@@ -7,19 +7,25 @@ import (
 )
 
 func TestAdd(t *testing.T) {
-	dict := NewODict()
-	dict.AddPair(&ValueHolder{1}, &ValueHolder{'a'})
-	dict.AddPair(&ValueHolder{2}, &ValueHolder{'b'})
-	dict.AddPair(&ValueHolder{3}, &ValueHolder{'c'})
-	dict.AddPair(&ValueHolder{4}, &ValueHolder{'d'})
+	keyGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	dict := NewSmartODict(keyGen, valueGen)
+	dict.AddPair(1, 'a')
+	dict.AddPair(2, 'b')
+	dict.AddPair(3, 'c')
+	dict.AddPair(4, 'd')
 	testutils.ASSERT_EQ(t, dict.Size(), uint64(4))
 }
 
 func TestAt(t *testing.T) {
 	dict := NewODict()
-	dict.AddPair(&ValueHolder{1}, &ValueHolder{'a'})
-	dict.AddPair(&ValueHolder{2}, &ValueHolder{'b'})
-	dict.AddPair(&ValueHolder{3}, &ValueHolder{'c'})
+	dict.AddValueHoldersPair(&ValueHolder{1}, &ValueHolder{'a'})
+	dict.AddValueHoldersPair(&ValueHolder{2}, &ValueHolder{'b'})
+	dict.AddValueHoldersPair(&ValueHolder{3}, &ValueHolder{'c'})
 	testutils.ASSERT_EQ(t, dict.Size(), uint64(3))
 	expectedValues := []int32{97, 98, 99}
 	for i := 0; i < 3; i++ {
@@ -31,10 +37,10 @@ func TestAt(t *testing.T) {
 
 func TestDelete(t *testing.T) {
 	dict := NewODict()
-	dict.AddPair(&ValueHolder{1}, &ValueHolder{'a'})
-	dict.AddPair(&ValueHolder{2}, &ValueHolder{'b'})
-	dict.AddPair(&ValueHolder{3}, &ValueHolder{'c'})
-	dict.AddPair(&ValueHolder{4}, &ValueHolder{'d'})
+	dict.AddValueHoldersPair(&ValueHolder{1}, &ValueHolder{'a'})
+	dict.AddValueHoldersPair(&ValueHolder{2}, &ValueHolder{'b'})
+	dict.AddValueHoldersPair(&ValueHolder{3}, &ValueHolder{'c'})
+	dict.AddValueHoldersPair(&ValueHolder{4}, &ValueHolder{'d'})
 	testutils.ASSERT_EQ(t, dict.Size(), uint64(4))
 	dict.DeleteKey(1)
 	testutils.ASSERT_EQ(t, dict.Size(), uint64(3))
@@ -42,10 +48,10 @@ func TestDelete(t *testing.T) {
 
 func TestDo(t *testing.T) {
 	dict := NewODict()
-	dict.AddPair(&ValueHolder{1}, &ValueHolder{'a'})
-	dict.AddPair(&ValueHolder{2}, &ValueHolder{'b'})
-	dict.AddPair(&ValueHolder{3}, &ValueHolder{'c'})
-	dict.AddPair(&ValueHolder{4}, &ValueHolder{'d'})
+	dict.AddValueHoldersPair(&ValueHolder{1}, &ValueHolder{'a'})
+	dict.AddValueHoldersPair(&ValueHolder{2}, &ValueHolder{'b'})
+	dict.AddValueHoldersPair(&ValueHolder{3}, &ValueHolder{'c'})
+	dict.AddValueHoldersPair(&ValueHolder{4}, &ValueHolder{'d'})
 	counter := 0
 	expectedKeys := []int{1, 2, 3, 4}
 	expectedValues := []int32{97, 98, 99, 100}
@@ -58,10 +64,10 @@ func TestDo(t *testing.T) {
 
 func TestReverseDo(t *testing.T) {
 	dict := NewODict()
-	dict.AddPair(&ValueHolder{1}, &ValueHolder{'a'})
-	dict.AddPair(&ValueHolder{2}, &ValueHolder{'b'})
-	dict.AddPair(&ValueHolder{3}, &ValueHolder{'c'})
-	dict.AddPair(&ValueHolder{4}, &ValueHolder{'d'})
+	dict.AddValueHoldersPair(&ValueHolder{1}, &ValueHolder{'a'})
+	dict.AddValueHoldersPair(&ValueHolder{2}, &ValueHolder{'b'})
+	dict.AddValueHoldersPair(&ValueHolder{3}, &ValueHolder{'c'})
+	dict.AddValueHoldersPair(&ValueHolder{4}, &ValueHolder{'d'})
 	counter := 3
 	expectedKeys := []int{1, 2, 3, 4}
 	expectedValues := []int32{97, 98, 99, 100}
@@ -74,10 +80,10 @@ func TestReverseDo(t *testing.T) {
 
 func TestSelect(t *testing.T) {
 	dict := NewODict()
-	dict.AddPair(&ValueHolder{1}, &ValueHolder{'a'})
-	dict.AddPair(&ValueHolder{2}, &ValueHolder{'b'})
-	dict.AddPair(&ValueHolder{3}, &ValueHolder{'c'})
-	dict.AddPair(&ValueHolder{4}, &ValueHolder{'d'})
+	dict.AddValueHoldersPair(&ValueHolder{1}, &ValueHolder{'a'})
+	dict.AddValueHoldersPair(&ValueHolder{2}, &ValueHolder{'b'})
+	dict.AddValueHoldersPair(&ValueHolder{3}, &ValueHolder{'c'})
+	dict.AddValueHoldersPair(&ValueHolder{4}, &ValueHolder{'d'})
 	selected := dict.Select(func(each TreeNodeInterface) bool {
 		if each.GetKeyValue().(int) > 1 {
 			return true
@@ -96,10 +102,10 @@ func TestSelect(t *testing.T) {
 
 func TestCollect(t *testing.T) {
 	dict := NewODict()
-	dict.AddPair(&ValueHolder{1}, &ValueHolder{'a'})
-	dict.AddPair(&ValueHolder{2}, &ValueHolder{'b'})
-	dict.AddPair(&ValueHolder{3}, &ValueHolder{'c'})
-	dict.AddPair(&ValueHolder{4}, &ValueHolder{'d'})
+	dict.AddValueHoldersPair(&ValueHolder{1}, &ValueHolder{'a'})
+	dict.AddValueHoldersPair(&ValueHolder{2}, &ValueHolder{'b'})
+	dict.AddValueHoldersPair(&ValueHolder{3}, &ValueHolder{'c'})
+	dict.AddValueHoldersPair(&ValueHolder{4}, &ValueHolder{'d'})
 	collected := dict.Collect(func(each TreeNodeInterface) (CollectionObject, CollectionObject) {
 		return &ValueHolder{each.GetKeyValue()}, &ValueHolder{each.GetValue().(int32) + 5}
 	})
@@ -115,10 +121,10 @@ func TestCollect(t *testing.T) {
 
 func TestInclides(t *testing.T) {
 	dict := NewODict()
-	dict.AddPair(&ValueHolder{1}, &ValueHolder{'a'})
-	dict.AddPair(&ValueHolder{2}, &ValueHolder{'b'})
-	dict.AddPair(&ValueHolder{3}, &ValueHolder{'c'})
-	dict.AddPair(&ValueHolder{4}, &ValueHolder{'d'})
+	dict.AddValueHoldersPair(&ValueHolder{1}, &ValueHolder{'a'})
+	dict.AddValueHoldersPair(&ValueHolder{2}, &ValueHolder{'b'})
+	dict.AddValueHoldersPair(&ValueHolder{3}, &ValueHolder{'c'})
+	dict.AddValueHoldersPair(&ValueHolder{4}, &ValueHolder{'d'})
 	testutils.ASSERT_EQ(t, dict.Includes(2), true)
 	testutils.ASSERT_EQ(t, dict.Includes(22), false)
 }

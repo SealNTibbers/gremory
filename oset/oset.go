@@ -5,8 +5,16 @@ import (
 )
 
 type OSet struct {
-	root TreeNodeInterface
-	size uint64
+	root           TreeNodeInterface
+	size           uint64
+	valueGenerator func(interface{}) CollectionObject
+}
+
+func NewSmartOSet(valueGenerator func(interface{}) CollectionObject) *OSet {
+	oset := new(OSet)
+	oset.root = GetNilNode()
+	oset.valueGenerator = valueGenerator
+	return oset
 }
 
 func NewOSet() *OSet {
@@ -15,7 +23,14 @@ func NewOSet() *OSet {
 	return oset
 }
 
-func (s *OSet) AddValue(value CollectionObject) {
+func (s *OSet) AddValue(value interface{}) {
+	if s.valueGenerator == nil {
+		return
+	}
+	s.AddValueHolders(s.valueGenerator(value))
+}
+
+func (s *OSet) AddValueHolders(value CollectionObject) {
 	node := NewRBNode()
 	node.Data = value
 	s.Add(node)
@@ -59,7 +74,7 @@ func (s *OSet) Do(action func(each TreeNodeInterface)) {
 func (s *OSet) Collect(collectAction func(each TreeNodeInterface) CollectionObject) *OSet {
 	result := NewOSet()
 	doAction := func(e TreeNodeInterface) {
-		result.AddValue(collectAction(e))
+		result.AddValueHolders(collectAction(e))
 	}
 	s.Do(doAction)
 	return result
@@ -69,7 +84,7 @@ func (s *OSet) Select(selectAction func(each TreeNodeInterface) bool) *OSet {
 	result := NewOSet()
 	doAction := func(e TreeNodeInterface) {
 		if selectAction(e) {
-			result.AddValue(e.GetData())
+			result.AddValueHolders(e.GetData())
 		}
 	}
 	s.Do(doAction)

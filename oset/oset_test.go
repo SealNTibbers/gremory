@@ -45,9 +45,9 @@ func (lv *TestTypeHolder) Equal(rv CollectionObject) bool {
 
 func TestDoForTestType(t *testing.T) {
 	set := NewOSet()
-	set.AddValue(&TestTypeHolder{TestType{1, "john"}})
-	set.AddValue(&TestTypeHolder{TestType{2, "garry"}})
-	set.AddValue(&TestTypeHolder{TestType{3, "marry"}})
+	set.AddValueHolders(&TestTypeHolder{TestType{1, "john"}})
+	set.AddValueHolders(&TestTypeHolder{TestType{2, "garry"}})
+	set.AddValueHolders(&TestTypeHolder{TestType{3, "marry"}})
 	counter := 0
 	expectedValues := []TestType{{1, "john"}, {2, "garry"}, {3, "marry"}}
 	set.Do(func(each TreeNodeInterface) {
@@ -59,9 +59,9 @@ func TestDoForTestType(t *testing.T) {
 
 func TestSelectForTestType(t *testing.T) {
 	set := NewOSet()
-	set.AddValue(&TestTypeHolder{TestType{1, "john"}})
-	set.AddValue(&TestTypeHolder{TestType{2, "garry"}})
-	set.AddValue(&TestTypeHolder{TestType{3, "marry"}})
+	set.AddValueHolders(&TestTypeHolder{TestType{1, "john"}})
+	set.AddValueHolders(&TestTypeHolder{TestType{2, "garry"}})
+	set.AddValueHolders(&TestTypeHolder{TestType{3, "marry"}})
 	selectedSet := set.Select(func(each TreeNodeInterface) bool {
 		if each.GetValue().(TestType).id > 1 {
 			return true
@@ -79,9 +79,9 @@ func TestSelectForTestType(t *testing.T) {
 
 func TestCollectForTestType(t *testing.T) {
 	set := NewOSet()
-	set.AddValue(&TestTypeHolder{TestType{1, "john"}})
-	set.AddValue(&TestTypeHolder{TestType{2, "garry"}})
-	set.AddValue(&TestTypeHolder{TestType{3, "marry"}})
+	set.AddValueHolders(&TestTypeHolder{TestType{1, "john"}})
+	set.AddValueHolders(&TestTypeHolder{TestType{2, "garry"}})
+	set.AddValueHolders(&TestTypeHolder{TestType{3, "marry"}})
 
 	collectedSet := set.Collect(func(each TreeNodeInterface) CollectionObject {
 		return &TestTypeHolder{TestType{each.GetValue().(TestType).id * 10, each.GetValue().(TestType).name}}
@@ -96,14 +96,17 @@ func TestCollectForTestType(t *testing.T) {
 }
 
 func TestDo(t *testing.T) {
-	set := NewOSet()
-	set.AddValue(&ValueHolder{3})
-	set.AddValue(&ValueHolder{2})
-	set.AddValue(&ValueHolder{3})
-	set.AddValue(&ValueHolder{15})
-	set.AddValue(&ValueHolder{20})
-	set.AddValue(&ValueHolder{1})
-	set.AddValue(&ValueHolder{3})
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	set := NewSmartOSet(valueGen)
+	set.AddValue(3)
+	set.AddValue(2)
+	set.AddValue(3)
+	set.AddValue(15)
+	set.AddValue(20)
+	set.AddValue(1)
+	set.AddValue(3)
 	counter := 0
 	expectedValues := []int{1, 2, 3, 15, 20}
 	set.Do(func(each TreeNodeInterface) {
@@ -114,13 +117,13 @@ func TestDo(t *testing.T) {
 
 func TestReverseDo(t *testing.T) {
 	set := NewOSet()
-	set.AddValue(&ValueHolder{3})
-	set.AddValue(&ValueHolder{2})
-	set.AddValue(&ValueHolder{3})
-	set.AddValue(&ValueHolder{15})
-	set.AddValue(&ValueHolder{20})
-	set.AddValue(&ValueHolder{1})
-	set.AddValue(&ValueHolder{3})
+	set.AddValueHolders(&ValueHolder{3})
+	set.AddValueHolders(&ValueHolder{2})
+	set.AddValueHolders(&ValueHolder{3})
+	set.AddValueHolders(&ValueHolder{15})
+	set.AddValueHolders(&ValueHolder{20})
+	set.AddValueHolders(&ValueHolder{1})
+	set.AddValueHolders(&ValueHolder{3})
 	counter := 4
 	expectedValues := []int{20, 15, 3, 2, 1}
 	set.Do(func(each TreeNodeInterface) {
@@ -131,10 +134,10 @@ func TestReverseDo(t *testing.T) {
 
 func TestSelect(t *testing.T) {
 	set := NewOSet()
-	set.AddValue(&ValueHolder{7})
-	set.AddValue(&ValueHolder{10})
-	set.AddValue(&ValueHolder{12})
-	set.AddValue(&ValueHolder{24})
+	set.AddValueHolders(&ValueHolder{7})
+	set.AddValueHolders(&ValueHolder{10})
+	set.AddValueHolders(&ValueHolder{12})
+	set.AddValueHolders(&ValueHolder{24})
 	selectedSet := set.Select(func(each TreeNodeInterface) bool {
 		if each.GetValue().(int) > 8 {
 			return true
@@ -151,9 +154,9 @@ func TestSelect(t *testing.T) {
 
 func TestCollect(t *testing.T) {
 	set := NewOSet()
-	set.AddValue(&ValueHolder{1})
-	set.AddValue(&ValueHolder{2})
-	set.AddValue(&ValueHolder{3})
+	set.AddValueHolders(&ValueHolder{1})
+	set.AddValueHolders(&ValueHolder{2})
+	set.AddValueHolders(&ValueHolder{3})
 	collectSet := set.Collect(func(each TreeNodeInterface) CollectionObject {
 		return &ValueHolder{each.GetValue().(int) * 10}
 	})
@@ -167,9 +170,9 @@ func TestCollect(t *testing.T) {
 
 func TestInclides(t *testing.T) {
 	set := NewOSet()
-	set.AddValue(&ValueHolder{1})
-	set.AddValue(&ValueHolder{2})
-	set.AddValue(&ValueHolder{3})
+	set.AddValueHolders(&ValueHolder{1})
+	set.AddValueHolders(&ValueHolder{2})
+	set.AddValueHolders(&ValueHolder{3})
 	testutils.ASSERT_EQ(t, set.Includes(2), true)
 	testutils.ASSERT_EQ(t, set.Includes(22), false)
 }

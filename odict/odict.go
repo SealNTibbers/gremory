@@ -3,17 +3,36 @@ package odict
 import . "github.com/SealNTibbers/gremory/utils"
 
 type ODict struct {
-	root TreeNodeInterface
-	size uint64
+	root           TreeNodeInterface
+	size           uint64
+	keyGenerator   func(interface{}) CollectionObject
+	valueGenerator func(interface{}) CollectionObject
+}
+
+func NewSmartODict(keyGenerator func(interface{}) CollectionObject, valueGenerator func(interface{}) CollectionObject) *ODict {
+	odict := new(ODict)
+	odict.root = GetNilNode()
+	odict.keyGenerator = keyGenerator
+	odict.valueGenerator = valueGenerator
+	return odict
 }
 
 func NewODict() *ODict {
 	odict := new(ODict)
 	odict.root = GetNilNode()
+	odict.keyGenerator = nil
+	odict.valueGenerator = nil
 	return odict
 }
 
-func (d *ODict) AddPair(key CollectionObject, value CollectionObject) {
+func (d *ODict) AddPair(key interface{}, value interface{}) {
+	if d.keyGenerator == nil || d.valueGenerator == nil {
+		return
+	}
+	d.AddValueHoldersPair(d.keyGenerator(key), d.valueGenerator(value))
+}
+
+func (d *ODict) AddValueHoldersPair(key CollectionObject, value CollectionObject) {
 	node := NewDictNode()
 	node.Key = key
 	node.Data = value
@@ -77,7 +96,7 @@ func (d *ODict) At(key interface{}) interface{} {
 func (d *ODict) Collect(collectAction func(each TreeNodeInterface) (CollectionObject, CollectionObject)) *ODict {
 	result := NewODict()
 	doAction := func(e TreeNodeInterface) {
-		result.AddPair(collectAction(e))
+		result.AddValueHoldersPair(collectAction(e))
 	}
 	d.Do(doAction)
 	return result
@@ -87,7 +106,7 @@ func (d *ODict) Select(selectAction func(each TreeNodeInterface) bool) *ODict {
 	result := NewODict()
 	doAction := func(e TreeNodeInterface) {
 		if selectAction(e) {
-			result.AddPair(e.GetKey(), e.GetData())
+			result.AddValueHoldersPair(e.GetKey(), e.GetData())
 		}
 	}
 	d.Do(doAction)
