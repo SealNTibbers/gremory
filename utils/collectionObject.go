@@ -1,5 +1,16 @@
 package utils
 
+import "math"
+
+var FLOAT_EPSILON float64 = 0.00000001
+
+func floatEquals(a, b float64) bool {
+	if math.Abs(a-b) < FLOAT_EPSILON {
+		return true
+	}
+	return false
+}
+
 type Comparable interface {
 	Less(rv CollectionObject) bool
 	Greater(rv CollectionObject) bool
@@ -9,7 +20,6 @@ type Comparable interface {
 type CollectionObject interface {
 	Comparable
 	GetValue() interface{}
-	SetValue(value interface{})
 }
 
 type ValueHolder struct {
@@ -20,15 +30,17 @@ func (holder *ValueHolder) GetValue() interface{} {
 	return holder.Data
 }
 
-func (holder *ValueHolder) SetValue(value interface{}) {
-	holder.Data = value
-}
-
 func (lv *ValueHolder) Less(rv CollectionObject) bool {
 	lvInt, lvIntOk := lv.Data.(int)
 	rvInt, rvIntOk := rv.(*ValueHolder).Data.(int)
 	if lvIntOk && rvIntOk {
 		return lvInt < rvInt
+	}
+
+	lvFloat, lvFloatOk := lv.Data.(float64)
+	rvFloat, rvFloatOk := rv.(*ValueHolder).Data.(float64)
+	if lvFloatOk && rvFloatOk {
+		return lvFloat < rvFloat
 	}
 
 	lvString, lvStringOk := lv.Data.(string)
@@ -47,6 +59,12 @@ func (lv *ValueHolder) Greater(rv CollectionObject) bool {
 		return lvInt > rvInt
 	}
 
+	lvFloat, lvFloatOk := lv.Data.(float64)
+	rvFloat, rvFloatOk := rv.(*ValueHolder).Data.(float64)
+	if lvFloatOk && rvFloatOk {
+		return lvFloat > rvFloat
+	}
+
 	lvString, lvStringOk := lv.Data.(string)
 	rvString, rvStringOk := rv.(*ValueHolder).Data.(string)
 	if lvStringOk && rvStringOk {
@@ -61,6 +79,12 @@ func (lv *ValueHolder) Equal(rv CollectionObject) bool {
 	rvInt, rvIntOk := rv.(*ValueHolder).Data.(int)
 	if lvIntOk && rvIntOk {
 		return lvInt == rvInt
+	}
+
+	lvFloat, lvFloatOk := lv.Data.(float64)
+	rvFloat, rvFloatOk := rv.(*ValueHolder).Data.(float64)
+	if lvFloatOk && rvFloatOk {
+		return floatEquals(lvFloat, rvFloat)
 	}
 
 	lvString, lvStringOk := lv.Data.(string)

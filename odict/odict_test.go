@@ -101,8 +101,7 @@ func TestCollect(t *testing.T) {
 	dict.AddPair(&ValueHolder{3}, &ValueHolder{'c'})
 	dict.AddPair(&ValueHolder{4}, &ValueHolder{'d'})
 	collected := dict.Collect(func(each TreeNodeInterface) (CollectionObject, CollectionObject) {
-		each.GetData().SetValue(each.GetValue().(int32) + 5)
-		return each.GetKey(), each.GetData()
+		return &ValueHolder{each.GetKeyValue()}, &ValueHolder{each.GetValue().(int32) + 5}
 	})
 	counter := 0
 	expectedKeys := []int{1, 2, 3, 4}

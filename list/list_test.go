@@ -102,6 +102,20 @@ func TestDelete(t *testing.T) {
 	testutils.ASSERT_EQ(t, list.Size(), uint64(0))
 }
 
+func TestDo(t *testing.T) {
+	list := new(List)
+	list.PushBack(&utils.ValueHolder{1})
+	list.PushBack(&utils.ValueHolder{2})
+	list.PushBack(&utils.ValueHolder{3})
+
+	counter := 0
+	expectedValues := []int{1, 2, 3}
+	list.Do(func(each *ListNode) {
+		testutils.ASSERT_EQ(t, each.GetValue().(int), expectedValues[counter])
+		counter = counter + 1
+	})
+}
+
 func TestSelect(t *testing.T) {
 	list := new(List)
 	list.PushBack(&utils.ValueHolder{1})
@@ -123,8 +137,7 @@ func TestCollect(t *testing.T) {
 	list.PushBack(&utils.ValueHolder{2})
 	list.PushBack(&utils.ValueHolder{3})
 	collectList := list.Collect(func(each *ListNode) utils.CollectionObject {
-		each.Data.SetValue(each.GetValue().(int) * 10)
-		return each.Data
+		return &utils.ValueHolder{each.GetValue().(int) * 10}
 	})
 	testutils.ASSERT_EQ(t, collectList.At(0), 10)
 	testutils.ASSERT_EQ(t, collectList.At(1), 20)
