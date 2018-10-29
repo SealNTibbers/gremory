@@ -1,6 +1,8 @@
 package list
 
-import . "github.com/SealNTibbers/gremory/utils"
+import (
+	. "github.com/SealNTibbers/gremory/utils"
+)
 
 type DataType = CollectionObject
 
@@ -270,6 +272,58 @@ func (l *List) Collect(collectAction func(each *ListNode) CollectionObject) *Lis
 	}
 	l.Do(doAction)
 	return result
+}
+
+func swapData(lv *ListNode, rv *ListNode) {
+	var tmpData = lv.Data
+	lv.Data = rv.Data
+	rv.Data = tmpData
+}
+
+func partition(low *ListNode, high *ListNode) *ListNode {
+	var i *ListNode = nil
+	var j = low
+	var pivot = high
+
+	for j != high {
+		if pivot.Data.Greater(j.Data) {
+			if i == nil {
+				i = low
+			} else {
+				i = i.next
+			}
+			swapData(i, j)
+		}
+		j = j.next
+	}
+	if i == nil {
+		i = low
+	} else {
+		i = i.next
+	}
+	swapData(i, j)
+
+	return i
+}
+
+func quickSort(low *ListNode, high *ListNode) {
+	if high != nil && low != high && low != high.next {
+		var currentPartition = partition(low, high)
+		quickSort(low, currentPartition.prev)
+		quickSort(currentPartition.next, high)
+	}
+}
+
+func (l *List) AsSortedList() *List {
+	copyList := l.Select(func(each *ListNode) bool {
+		return true
+	})
+	copyList.Sort()
+	return copyList
+}
+
+func (l *List) Sort() {
+	quickSort(l.head, l.tail)
 }
 
 func (l *List) Includes(data interface{}) bool {

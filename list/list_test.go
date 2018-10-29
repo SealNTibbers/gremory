@@ -185,3 +185,48 @@ func TestInclides(t *testing.T) {
 	testutils.ASSERT_EQ(t, list.Includes(2), true)
 	testutils.ASSERT_EQ(t, list.Includes(22), false)
 }
+
+func TestSort(t *testing.T) {
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(5)
+	list.PushBack(20)
+	list.PushBack(4)
+	list.PushBack(3)
+	list.PushBack(30)
+	list.Sort()
+	counter := 0
+	expectedValues := []int{3, 4, 5, 20, 30}
+	list.Do(func(each *ListNode) {
+		testutils.ASSERT_EQ(t, each.GetValue().(int), expectedValues[counter])
+		counter = counter + 1
+	})
+}
+
+func TestAsSortedList(t *testing.T) {
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(5)
+	list.PushBack(20)
+	list.PushBack(4)
+	list.PushBack(3)
+	list.PushBack(30)
+	counter := 0
+	expectedValues := []int{5, 20, 4, 3, 30}
+	list.Do(func(each *ListNode) {
+		testutils.ASSERT_EQ(t, each.GetValue().(int), expectedValues[counter])
+		counter = counter + 1
+	})
+
+	sortedList := list.AsSortedList()
+	counter = 0
+	expectedValues = []int{3, 4, 5, 20, 30}
+	sortedList.Do(func(each *ListNode) {
+		testutils.ASSERT_EQ(t, each.GetValue().(int), expectedValues[counter])
+		counter = counter + 1
+	})
+}
