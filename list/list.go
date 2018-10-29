@@ -255,7 +255,7 @@ func (l *List) Do(action func(each *ListNode)) {
 }
 
 func (l *List) Select(selectAction func(each *ListNode) bool) *List {
-	result := new(List)
+	result := NewSmartList(l.valueGenerator)
 	doAction := func(e *ListNode) {
 		if selectAction(e) {
 			result.PushBackValueHolder(e.Data)
@@ -266,7 +266,7 @@ func (l *List) Select(selectAction func(each *ListNode) bool) *List {
 }
 
 func (l *List) Collect(collectAction func(each *ListNode) CollectionObject) *List {
-	result := new(List)
+	result := NewSmartList(l.valueGenerator)
 	doAction := func(e *ListNode) {
 		result.PushBackValueHolder(collectAction(e))
 	}
