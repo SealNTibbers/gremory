@@ -1,6 +1,7 @@
 package list
 
 import (
+	. "github.com/SealNTibbers/gremory/oset"
 	. "github.com/SealNTibbers/gremory/utils"
 )
 
@@ -338,4 +339,12 @@ func (l *List) Includes(data interface{}) bool {
 	}
 	result := l.Select(selectAction)
 	return result.Size() > 0
+}
+
+func (l *List) AsOSet() *OSet {
+	set := NewSmartOSet(l.valueGenerator)
+	l.Do(func(each *ListNode) {
+		set.AddValue(each.GetValue().(int))
+	})
+	return set
 }
