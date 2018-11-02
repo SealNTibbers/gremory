@@ -1,7 +1,6 @@
 package oset
 
 import (
-	. "github.com/SealNTibbers/gremory/list"
 	. "github.com/SealNTibbers/gremory/utils"
 )
 
@@ -104,12 +103,4 @@ func (s *OSet) Includes(data interface{}) bool {
 	}
 	result := s.Select(selectAction)
 	return result.size > 0
-}
-
-func (s *OSet) AsList() *List {
-	list := NewSmartList(s.valueGenerator)
-	s.Do(func(each TreeNodeInterface) {
-		list.PushBack(each.GetValue().(int))
-	})
-	return list
 }
