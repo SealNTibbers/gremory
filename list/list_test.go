@@ -18,30 +18,39 @@ func TestCreateNode(t *testing.T) {
 }
 
 func TestPushFront(t *testing.T) {
-	list := new(List)
-	list.PushFrontValueHolder(&ValueHolder{23})
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushFront(23)
 	testutils.ASSERT_EQ(t, list.head.GetValue(), 23)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(1))
-	list.PushFrontValueHolder(&ValueHolder{33})
+	list.PushFront(33)
 	testutils.ASSERT_EQ(t, list.head.GetValue(), 33)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(2))
 }
 
 func TestPushBack(t *testing.T) {
-	list := new(List)
-	list.PushBackValueHolder(&ValueHolder{23})
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(23)
 	testutils.ASSERT_EQ(t, list.head.GetValue(), 23)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(1))
-	list.PushBackValueHolder(&ValueHolder{33})
+	list.PushBack(33)
 	testutils.ASSERT_EQ(t, list.head.next.GetValue(), 33)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(2))
 }
 
 func TestPopBack(t *testing.T) {
-	list := new(List)
-	list.PushBackValueHolder(&ValueHolder{23})
-	list.PushBackValueHolder(&ValueHolder{33})
-	list.PushBackValueHolder(&ValueHolder{43})
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(23)
+	list.PushBack(33)
+	list.PushBack(43)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(3))
 	testutils.ASSERT_EQ(t, list.Back(), 43)
 	back := list.PopBack()
@@ -51,10 +60,13 @@ func TestPopBack(t *testing.T) {
 }
 
 func TestPopFront(t *testing.T) {
-	list := new(List)
-	list.PushBackValueHolder(&ValueHolder{23})
-	list.PushBackValueHolder(&ValueHolder{33})
-	list.PushBackValueHolder(&ValueHolder{43})
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(23)
+	list.PushBack(33)
+	list.PushBack(43)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(3))
 	testutils.ASSERT_EQ(t, list.Front(), 23)
 	front := list.PopFront()
@@ -64,19 +76,25 @@ func TestPopFront(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
-	list := new(List)
-	list.PushBackValueHolder(&ValueHolder{23})
-	list.PushBackValueHolder(&ValueHolder{33})
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(23)
+	list.PushBack(33)
 	testutils.ASSERT_EQ(t, list.At(0), 23)
 	testutils.ASSERT_EQ(t, list.At(1), 33)
 }
 
 func TestInsertAt(t *testing.T) {
-	list := new(List)
-	list.PushBackValueHolder(&ValueHolder{23})
-	list.PushBackValueHolder(&ValueHolder{33})
-	list.PushBackValueHolder(&ValueHolder{34})
-	list.InsertAtValueHolder(&ValueHolder{11}, 2)
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(23)
+	list.PushBack(33)
+	list.PushBack(34)
+	list.InsertAt(11, 2)
 	testutils.ASSERT_EQ(t, list.At(0), 23)
 	testutils.ASSERT_EQ(t, list.At(1), 33)
 	testutils.ASSERT_EQ(t, list.At(2), 11)
@@ -84,12 +102,15 @@ func TestInsertAt(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	list := new(List)
-	list.PushBackValueHolder(&ValueHolder{23})
-	list.PushBackValueHolder(&ValueHolder{33})
-	list.PushBackValueHolder(&ValueHolder{34})
-	list.PushBackValueHolder(&ValueHolder{11})
-	list.DeleteValueHolder(&ValueHolder{34})
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(23)
+	list.PushBack(33)
+	list.PushBack(34)
+	list.PushBack(11)
+	list.Delete(34)
 	testutils.ASSERT_EQ(t, list.At(0), 23)
 	testutils.ASSERT_EQ(t, list.At(1), 33)
 	testutils.ASSERT_EQ(t, list.At(2), 11)
@@ -154,34 +175,43 @@ func TestCollect(t *testing.T) {
 }
 
 func TestBegin(t *testing.T) {
-	list := new(List)
-	list.PushBackValueHolder(&ValueHolder{1})
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(1)
 	testutils.ASSERT_EQ(t, list.Front(), 1)
-	list.PushBackValueHolder(&ValueHolder{2})
+	list.PushBack(2)
 	testutils.ASSERT_EQ(t, list.Front(), 1)
-	list.PushBackValueHolder(&ValueHolder{3})
+	list.PushBack(3)
 	testutils.ASSERT_EQ(t, list.Front(), 1)
-	list.PushFrontValueHolder(&ValueHolder{4})
+	list.PushFront(4)
 	testutils.ASSERT_EQ(t, list.Front(), 4)
 }
 
 func TestEnd(t *testing.T) {
-	list := new(List)
-	list.PushBackValueHolder(&ValueHolder{1})
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(1)
 	testutils.ASSERT_EQ(t, list.Back(), 1)
-	list.PushBackValueHolder(&ValueHolder{2})
+	list.PushBack(2)
 	testutils.ASSERT_EQ(t, list.Back(), 2)
-	list.PushBackValueHolder(&ValueHolder{3})
+	list.PushBack(3)
 	testutils.ASSERT_EQ(t, list.Back(), 3)
-	list.PushFrontValueHolder(&ValueHolder{4})
+	list.PushFront(4)
 	testutils.ASSERT_EQ(t, list.Back(), 3)
 }
 
 func TestInclides(t *testing.T) {
-	list := new(List)
-	list.PushBackValueHolder(&ValueHolder{1})
-	list.PushBackValueHolder(&ValueHolder{2})
-	list.PushBackValueHolder(&ValueHolder{3})
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(1)
+	list.PushBack(2)
+	list.PushBack(3)
 	testutils.ASSERT_EQ(t, list.Includes(2), true)
 	testutils.ASSERT_EQ(t, list.Includes(22), false)
 }
@@ -228,5 +258,26 @@ func TestAsSortedList(t *testing.T) {
 	sortedList.Do(func(each *ListNode) {
 		testutils.ASSERT_EQ(t, each.GetValue().(int), expectedValues[counter])
 		counter = counter + 1
+	})
+}
+
+func TestWorkingWithTestType(t *testing.T) {
+	valueGen := func(value interface{}) CollectionObject {
+		return &testutils.TestTypeHolder{value.(testutils.TestType)}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(testutils.TestType{1, "john"})
+	list.PushBack(testutils.TestType{2, "garry"})
+	counter := 0
+	expectedValues := []testutils.TestType{{1, "john"}, {2, "garry"}}
+	list.Do(func(each *ListNode) {
+		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Id, expectedValues[counter].Id)
+		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Name, expectedValues[counter].Name)
+		counter = counter + 1
+	})
+	list.Delete(testutils.TestType{2, "garry"})
+	list.Do(func(each *ListNode) {
+		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Id, expectedValues[0].Id)
+		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Name, expectedValues[0].Name)
 	})
 }

@@ -6,91 +6,54 @@ import (
 	"testing"
 )
 
-type TestType struct {
-	id   int
-	name string
-}
-
-type TestTypeHolder struct {
-	data TestType
-}
-
-func (holder *TestTypeHolder) GetValue() interface{} {
-	return holder.data
-}
-
-func (lv *TestTypeHolder) Less(rv CollectionObject) bool {
-	rvValue, ok := rv.(*TestTypeHolder)
-	if !ok {
-		return false
-	}
-	return lv.data.id < rvValue.data.id
-}
-
-func (lv *TestTypeHolder) Greater(rv CollectionObject) bool {
-	rvValue, ok := rv.(*TestTypeHolder)
-	if !ok {
-		return false
-	}
-	return lv.data.id > rvValue.data.id
-}
-
-func (lv *TestTypeHolder) Equal(rv CollectionObject) bool {
-	rvValue, ok := rv.(*TestTypeHolder)
-	if !ok {
-		return false
-	}
-	return lv.data.id > rvValue.data.id
-}
-
 func TestDoForTestType(t *testing.T) {
 	set := NewOSet()
-	set.AddValueHolders(&TestTypeHolder{TestType{1, "john"}})
-	set.AddValueHolders(&TestTypeHolder{TestType{2, "garry"}})
-	set.AddValueHolders(&TestTypeHolder{TestType{3, "marry"}})
+	set.AddValueHolders(&testutils.TestTypeHolder{testutils.TestType{1, "john"}})
+	set.AddValueHolders(&testutils.TestTypeHolder{testutils.TestType{2, "garry"}})
+	set.AddValueHolders(&testutils.TestTypeHolder{testutils.TestType{3, "marry"}})
 	counter := 0
-	expectedValues := []TestType{{1, "john"}, {2, "garry"}, {3, "marry"}}
+	expectedValues := []testutils.TestType{{1, "john"}, {2, "garry"}, {3, "marry"}}
 	set.Do(func(each TreeNodeInterface) {
-		testutils.ASSERT_EQ(t, each.GetValue().(TestType).id, expectedValues[counter].id)
-		testutils.ASSERT_EQ(t, each.GetValue().(TestType).name, expectedValues[counter].name)
+		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Id, expectedValues[counter].Id)
+		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Name, expectedValues[counter].Name)
 		counter = counter + 1
 	})
 }
 
 func TestSelectForTestType(t *testing.T) {
 	set := NewOSet()
-	set.AddValueHolders(&TestTypeHolder{TestType{1, "john"}})
-	set.AddValueHolders(&TestTypeHolder{TestType{2, "garry"}})
-	set.AddValueHolders(&TestTypeHolder{TestType{3, "marry"}})
+	set.AddValueHolders(&testutils.TestTypeHolder{testutils.TestType{1, "john"}})
+	set.AddValueHolders(&testutils.TestTypeHolder{testutils.TestType{2, "garry"}})
+	set.AddValueHolders(&testutils.TestTypeHolder{testutils.TestType{3, "marry"}})
 	selectedSet := set.Select(func(each TreeNodeInterface) bool {
-		if each.GetValue().(TestType).id > 1 {
+		if each.GetValue().(testutils.TestType).Id > 1 {
 			return true
 		}
 		return false
 	})
 	counter := 0
-	expectedValues := []TestType{{2, "garry"}, {3, "marry"}}
+	expectedValues := []testutils.TestType{{2, "garry"}, {3, "marry"}}
 	selectedSet.Do(func(each TreeNodeInterface) {
-		testutils.ASSERT_EQ(t, each.GetValue().(TestType).id, expectedValues[counter].id)
-		testutils.ASSERT_EQ(t, each.GetValue().(TestType).name, expectedValues[counter].name)
+		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Id, expectedValues[counter].Id)
+		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Name, expectedValues[counter].Name)
 		counter = counter + 1
 	})
 }
 
 func TestCollectForTestType(t *testing.T) {
 	set := NewOSet()
-	set.AddValueHolders(&TestTypeHolder{TestType{1, "john"}})
-	set.AddValueHolders(&TestTypeHolder{TestType{2, "garry"}})
-	set.AddValueHolders(&TestTypeHolder{TestType{3, "marry"}})
+	set.AddValueHolders(&testutils.TestTypeHolder{testutils.TestType{1, "john"}})
+	set.AddValueHolders(&testutils.TestTypeHolder{testutils.TestType{2, "garry"}})
+	set.AddValueHolders(&testutils.TestTypeHolder{testutils.TestType{3, "marry"}})
 
 	collectedSet := set.Collect(func(each TreeNodeInterface) CollectionObject {
-		return &TestTypeHolder{TestType{each.GetValue().(TestType).id * 10, each.GetValue().(TestType).name}}
+		return &testutils.TestTypeHolder{testutils.TestType{each.GetValue().(testutils.TestType).Id * 10, each.GetValue().(testutils.TestType).Name}}
 	})
 	counter := 0
-	expectedValues := []TestType{{10, "john"}, {20, "garry"}, {30, "marry"}}
+	expectedValues := []testutils.TestType{{10, "john"}, {20, "garry"}, {30, "marry"}}
 	collectedSet.Do(func(each TreeNodeInterface) {
-		testutils.ASSERT_EQ(t, each.GetValue().(TestType).id, expectedValues[counter].id)
-		testutils.ASSERT_EQ(t, each.GetValue().(TestType).name, expectedValues[counter].name)
+		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Id, expectedValues[counter].Id)
+		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Name, expectedValues[counter].Name)
 		counter = counter + 1
 	})
 }

@@ -4,10 +4,8 @@ import (
 	. "github.com/SealNTibbers/gremory/utils"
 )
 
-type DataType = CollectionObject
-
 type ListNode struct {
-	Data DataType
+	Data CollectionObject
 	next *ListNode
 	prev *ListNode
 	head *ListNode
@@ -45,10 +43,10 @@ func (l *List) PushFront(data interface{}) {
 	if l.valueGenerator == nil {
 		return
 	}
-	l.PushFrontValueHolder(l.valueGenerator(data))
+	l.pushFrontValueHolder(l.valueGenerator(data))
 }
 
-func (l *List) PushFrontValueHolder(data CollectionObject) {
+func (l *List) pushFrontValueHolder(data CollectionObject) {
 	newNode := CreateNode(data)
 	if l.head == nil {
 		l.head = newNode
@@ -63,17 +61,17 @@ func (l *List) Delete(data interface{}) {
 	if l.valueGenerator == nil {
 		return
 	}
-	l.DeleteValueHolder(l.valueGenerator(data))
+	l.deleteCollectionObject(l.valueGenerator(data))
 }
 
-func (l *List) DeleteValueHolder(data CollectionObject) {
+func (l *List) deleteCollectionObject(data CollectionObject) {
 	if l.head == nil {
 		return
 	}
 	currentElement := l.head
 	var removedNode *ListNode
 	for currentElement.next != nil {
-		if currentElement.GetValue() == data.GetValue() {
+		if data.Equal(currentElement.Data) {
 			removedNode = currentElement
 		}
 		currentElement = currentElement.next
@@ -129,10 +127,10 @@ func (l *List) PushBack(data interface{}) {
 	if l.valueGenerator == nil {
 		return
 	}
-	l.PushBackValueHolder(l.valueGenerator(data))
+	l.pushBackCollectionObject(l.valueGenerator(data))
 }
 
-func (l *List) PushBackValueHolder(data CollectionObject) {
+func (l *List) pushBackCollectionObject(data CollectionObject) {
 	temp := l.head
 	newNode := CreateNode(data)
 	if l.head == nil {
@@ -202,14 +200,15 @@ func (l *List) At(index uint64) interface{} {
 	return currentNode.Data.GetValue()
 }
 
-func (l *List) InsertAt(data CollectionObject, index uint64) {
+func (l *List) InsertAt(data interface{}, index uint64) {
 	if l.valueGenerator == nil {
 		return
 	}
-	l.InsertAtValueHolder(l.valueGenerator(data), index)
+
+	l.insertAtCollectionObject(l.valueGenerator(data), index)
 }
 
-func (l *List) InsertAtValueHolder(data CollectionObject, index uint64) {
+func (l *List) insertAtCollectionObject(data CollectionObject, index uint64) {
 	if l.head == nil || index > l.Size() {
 		return
 	}
@@ -258,7 +257,7 @@ func (l *List) Select(selectAction func(each *ListNode) bool) *List {
 	result := NewSmartList(l.valueGenerator)
 	doAction := func(e *ListNode) {
 		if selectAction(e) {
-			result.PushBackValueHolder(e.Data)
+			result.pushBackCollectionObject(e.Data)
 		}
 	}
 	l.Do(doAction)
@@ -268,7 +267,7 @@ func (l *List) Select(selectAction func(each *ListNode) bool) *List {
 func (l *List) Collect(collectAction func(each *ListNode) CollectionObject) *List {
 	result := NewSmartList(l.valueGenerator)
 	doAction := func(e *ListNode) {
-		result.PushBackValueHolder(collectAction(e))
+		result.pushBackCollectionObject(collectAction(e))
 	}
 	l.Do(doAction)
 	return result
