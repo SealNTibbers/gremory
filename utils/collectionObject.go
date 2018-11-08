@@ -1,6 +1,9 @@
 package utils
 
-import "math"
+import (
+	"math"
+	"reflect"
+)
 
 var FLOAT_EPSILON float64 = 0.00000001
 
@@ -31,6 +34,10 @@ func (holder *ValueHolder) GetValue() interface{} {
 }
 
 func (lv *ValueHolder) Less(rv CollectionObject) bool {
+	if reflect.TypeOf(lv.Data) != reflect.TypeOf(rv.(*ValueHolder).Data) {
+		return false
+	}
+
 	lvInt, lvIntOk := lv.Data.(int)
 	rvInt, rvIntOk := rv.(*ValueHolder).Data.(int)
 	if lvIntOk && rvIntOk {
@@ -49,10 +56,20 @@ func (lv *ValueHolder) Less(rv CollectionObject) bool {
 		return lvString < rvString
 	}
 
+	lvRune, lvRuneOk := lv.Data.(rune)
+	rvRune, rvRuneOk := rv.(*ValueHolder).Data.(rune)
+	if lvRuneOk && rvRuneOk {
+		return lvRune < rvRune
+	}
+
 	panic("This ValueHolder only for basic types.")
 }
 
 func (lv *ValueHolder) Greater(rv CollectionObject) bool {
+	if reflect.TypeOf(lv.Data) != reflect.TypeOf(rv.(*ValueHolder).Data) {
+		return false
+	}
+
 	lvInt, lvIntOk := lv.Data.(int)
 	rvInt, rvIntOk := rv.(*ValueHolder).Data.(int)
 	if lvIntOk && rvIntOk {
@@ -71,12 +88,23 @@ func (lv *ValueHolder) Greater(rv CollectionObject) bool {
 		return lvString > rvString
 	}
 
+	lvRune, lvRuneOk := lv.Data.(rune)
+	rvRune, rvRuneOk := rv.(*ValueHolder).Data.(rune)
+	if lvRuneOk && rvRuneOk {
+		return lvRune > rvRune
+	}
+
 	panic("This ValueHolder only for basic types.")
 }
 
 func (lv *ValueHolder) Equal(rv CollectionObject) bool {
+	if reflect.TypeOf(lv.Data) != reflect.TypeOf(rv.(*ValueHolder).Data) {
+		return false
+	}
+
 	lvInt, lvIntOk := lv.Data.(int)
 	rvInt, rvIntOk := rv.(*ValueHolder).Data.(int)
+
 	if lvIntOk && rvIntOk {
 		return lvInt == rvInt
 	}
@@ -91,6 +119,12 @@ func (lv *ValueHolder) Equal(rv CollectionObject) bool {
 	rvString, rvStringOk := rv.(*ValueHolder).Data.(string)
 	if lvStringOk && rvStringOk {
 		return lvString == rvString
+	}
+
+	lvRune, lvRuneOk := lv.Data.(rune)
+	rvRune, rvRuneOk := rv.(*ValueHolder).Data.(rune)
+	if lvRuneOk && rvRuneOk {
+		return lvRune == rvRune
 	}
 
 	panic("This ValueHolder only for basic types.")
