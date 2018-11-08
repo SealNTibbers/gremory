@@ -1,7 +1,6 @@
 package list
 
 import (
-	"fmt"
 	"github.com/SealNTibbers/gremory/testutils"
 	. "github.com/SealNTibbers/gremory/utils"
 	"testing"
@@ -301,27 +300,5 @@ func TestWorkingWithTestType(t *testing.T) {
 	list.Do(func(each *ListNode) {
 		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Id, expectedValues[0].Id)
 		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Name, expectedValues[0].Name)
-	})
-}
-
-func TestSample(t *testing.T) {
-	valueGen := func(value interface{}) CollectionObject {
-		return &ValueHolder{value}
-	}
-	list := NewSmartList(valueGen)
-	list.PushBack(23)
-	list.PushBack(33)
-	list.PushBack(11)
-
-	list.PushFront(0)
-
-	front := list.PopFront()
-	back := list.PopBack()
-	fmt.Println(front)
-	fmt.Println(back)
-
-	list.InsertAt(0, 0)
-	list.Do(func(each *ListNode) {
-		fmt.Println(each.GetValue().(int))
 	})
 }

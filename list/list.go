@@ -76,11 +76,11 @@ func (l *List) deleteCollectionObject(data CollectionObject) {
 		}
 		currentElement = currentElement.next
 	}
-	if removedNode == l.head {
+	if removedNode.Data.Equal(l.head.Data) {
 		l.head = removedNode.next
 	}
 
-	if removedNode == l.tail {
+	if removedNode.Data.Equal(l.tail.Data) {
 		l.tail = removedNode.prev
 	}
 	if removedNode == nil {
