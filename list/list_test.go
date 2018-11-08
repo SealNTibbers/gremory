@@ -1,6 +1,7 @@
 package list
 
 import (
+	"fmt"
 	"github.com/SealNTibbers/gremory/testutils"
 	. "github.com/SealNTibbers/gremory/utils"
 	"testing"
@@ -115,15 +116,19 @@ func TestDelete(t *testing.T) {
 	list.PushBack(33)
 	list.PushBack('a')
 	list.PushBack(11)
-	list.Delete('a')
+	list.Delete(11)
 	testutils.ASSERT_EQ(t, list.At(0), 23)
 	testutils.ASSERT_EQ(t, list.At(1), 33)
-	testutils.ASSERT_EQ(t, list.At(2), 11)
+	testutils.ASSERT_EQ(t, list.At(2), 'a')
 	testutils.ASSERT_EQ(t, list.Size(), uint64(3))
-	list.DeleteAt(0)
+	list.Delete(23)
 	testutils.ASSERT_EQ(t, list.At(0), 33)
-	testutils.ASSERT_EQ(t, list.At(1), 11)
+	testutils.ASSERT_EQ(t, list.At(1), 'a')
 	testutils.ASSERT_EQ(t, list.Size(), uint64(2))
+	list.DeleteAt(0)
+	testutils.ASSERT_EQ(t, list.At(0), 'a')
+	testutils.ASSERT_EQ(t, list.Size(), uint64(1))
+	list.PushFront(33)
 	list.DeleteAt(1)
 	testutils.ASSERT_EQ(t, list.At(0), 33)
 	testutils.ASSERT_EQ(t, list.Size(), uint64(1))
@@ -296,5 +301,27 @@ func TestWorkingWithTestType(t *testing.T) {
 	list.Do(func(each *ListNode) {
 		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Id, expectedValues[0].Id)
 		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Name, expectedValues[0].Name)
+	})
+}
+
+func TestSample(t *testing.T) {
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(23)
+	list.PushBack(33)
+	list.PushBack(11)
+
+	list.PushFront(0)
+
+	front := list.PopFront()
+	back := list.PopBack()
+	fmt.Println(front)
+	fmt.Println(back)
+
+	list.InsertAt(0, 0)
+	list.Do(func(each *ListNode) {
+		fmt.Println(each.GetValue().(int))
 	})
 }
