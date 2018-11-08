@@ -90,18 +90,24 @@ func (l *List) deleteCollectionObject(data CollectionObject) {
 }
 
 func (l *List) DeleteAt(index uint64) {
-	if l.head == nil {
+	listSize := l.Size()
+	if l.head == nil || index > listSize {
 		return
 	}
 	currentElement := l.head
 	var removedNode *ListNode
-	var counter uint64 = 0
-	for currentElement.next != nil {
-		if counter == index {
-			removedNode = currentElement
+	if index > 0 {
+		var counter uint64 = 1
+		for currentElement.next != nil {
+			if counter == index {
+				removedNode = currentElement
+			}
+			currentElement = currentElement.next
+			counter = counter + 1
 		}
-		currentElement = currentElement.next
-		counter = counter + 1
+	} else {
+		removedNode = currentElement
+		l.head = currentElement.next
 	}
 	if removedNode == nil {
 		return
@@ -209,20 +215,30 @@ func (l *List) InsertAt(data interface{}, index uint64) {
 }
 
 func (l *List) insertAtCollectionObject(data CollectionObject, index uint64) {
-	if l.head == nil || index > l.Size() {
+	listSize := l.Size()
+	if l.head == nil || index > listSize {
 		return
 	}
 	currentNode := l.head
-	var counter uint64 = 1
-	for counter != index {
-		currentNode = currentNode.next
-		counter = counter + 1
-	}
 	newNode := CreateNode(data)
 
-	newNode.next = currentNode.next
-	currentNode.next = newNode
-	newNode.prev = currentNode
+	if index > 0 {
+		var counter uint64 = 1
+		for counter != index {
+			currentNode = currentNode.next
+			counter = counter + 1
+		}
+		newNode.next = currentNode.next
+		currentNode.next = newNode
+		newNode.prev = currentNode
+		if listSize == index {
+			l.tail = currentNode
+		}
+	} else {
+		currentNode.prev = newNode
+		newNode.next = currentNode
+		l.head = newNode
+	}
 
 	if newNode.next != nil {
 		newNode.next.prev = newNode
