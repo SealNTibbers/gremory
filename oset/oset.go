@@ -27,16 +27,16 @@ func (s *OSet) AddValue(value interface{}) {
 	if s.valueGenerator == nil {
 		return
 	}
-	s.AddValueHolders(s.valueGenerator(value))
+	s.addCollectionObject(s.valueGenerator(value))
 }
 
-func (s *OSet) AddValueHolders(value CollectionObject) {
+func (s *OSet) addCollectionObject(value CollectionObject) {
 	node := NewRBNode()
 	node.Data = value
-	s.Add(node)
+	s.addNode(node)
 }
 
-func (s *OSet) Add(node *ValueNode) {
+func (s *OSet) addNode(node *ValueNode) {
 	s.root = InsertBST(s.root, node).(*ValueNode)
 	s.size = s.size + 1
 	s.root = FixAddRBTree(s.root, node)
@@ -74,7 +74,7 @@ func (s *OSet) Do(action func(each TreeNodeInterface)) {
 func (s *OSet) Collect(collectAction func(each TreeNodeInterface) CollectionObject) *OSet {
 	result := NewOSet()
 	doAction := func(e TreeNodeInterface) {
-		result.AddValueHolders(collectAction(e))
+		result.addCollectionObject(collectAction(e))
 	}
 	s.Do(doAction)
 	return result
@@ -84,7 +84,7 @@ func (s *OSet) Select(selectAction func(each TreeNodeInterface) bool) *OSet {
 	result := NewOSet()
 	doAction := func(e TreeNodeInterface) {
 		if selectAction(e) {
-			result.AddValueHolders(e.GetData())
+			result.addCollectionObject(e.GetData())
 		}
 	}
 	s.Do(doAction)

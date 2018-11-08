@@ -29,18 +29,18 @@ func (d *ODict) AddPair(key interface{}, value interface{}) {
 	if d.keyGenerator == nil || d.valueGenerator == nil {
 		return
 	}
-	d.AddValueHoldersPair(d.keyGenerator(key), d.valueGenerator(value))
+	d.addCollectionObjectsPair(d.keyGenerator(key), d.valueGenerator(value))
 }
 
-func (d *ODict) AddValueHoldersPair(key CollectionObject, value CollectionObject) {
+func (d *ODict) addCollectionObjectsPair(key CollectionObject, value CollectionObject) {
 	node := NewDictNode()
 	node.Key = key
 	node.Data = value
 
-	d.Add(node)
+	d.addNode(node)
 }
 
-func (d *ODict) Add(node *KeyValueNode) {
+func (d *ODict) addNode(node *KeyValueNode) {
 	d.root = InsertBST(d.root, node).(*KeyValueNode)
 	d.size = d.size + 1
 	d.root = FixAddRBTree(d.root, node)
@@ -96,7 +96,7 @@ func (d *ODict) At(key interface{}) interface{} {
 func (d *ODict) Collect(collectAction func(each TreeNodeInterface) (CollectionObject, CollectionObject)) *ODict {
 	result := NewODict()
 	doAction := func(e TreeNodeInterface) {
-		result.AddValueHoldersPair(collectAction(e))
+		result.addCollectionObjectsPair(collectAction(e))
 	}
 	d.Do(doAction)
 	return result
@@ -106,7 +106,7 @@ func (d *ODict) Select(selectAction func(each TreeNodeInterface) bool) *ODict {
 	result := NewODict()
 	doAction := func(e TreeNodeInterface) {
 		if selectAction(e) {
-			result.AddValueHoldersPair(e.GetKey(), e.GetData())
+			result.addCollectionObjectsPair(e.GetKey(), e.GetData())
 		}
 	}
 	d.Do(doAction)
