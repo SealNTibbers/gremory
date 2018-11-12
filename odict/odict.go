@@ -56,8 +56,12 @@ func (d *ODict) DeleteKey(key interface{}) {
 	d.root = FixDeleteRBTree(d.root, node)
 }
 
+func (d *ODict) IsEmpty() bool {
+	return d.root == nil
+}
+
 func (d *ODict) Size() uint64 {
-	if d.root == nil {
+	if d.IsEmpty() {
 		return 0
 	}
 	return d.size
@@ -68,7 +72,7 @@ func (d *ODict) walk(visitor Visitor) {
 }
 
 func (d *ODict) ReverseDo(action func(each TreeNodeInterface)) {
-	if d.root == nil {
+	if d.IsEmpty() {
 		return
 	}
 	visitor := &ReverseDoVisitor{Action: action}
@@ -76,7 +80,7 @@ func (d *ODict) ReverseDo(action func(each TreeNodeInterface)) {
 }
 
 func (d *ODict) Do(action func(each TreeNodeInterface)) {
-	if d.root == nil {
+	if d.IsEmpty() {
 		return
 	}
 	visitor := &DoVisitor{Action: action}
@@ -114,7 +118,7 @@ func (d *ODict) Select(selectAction func(each TreeNodeInterface) bool) *ODict {
 }
 
 func (d *ODict) Includes(key interface{}) bool {
-	if d.root == nil {
+	if d.IsEmpty() {
 		return false
 	}
 	selectAction := func(each TreeNodeInterface) bool {

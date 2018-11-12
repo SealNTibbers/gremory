@@ -353,7 +353,7 @@ func (l *List) Sort() {
 }
 
 func (l *List) Includes(data interface{}) bool {
-	if l.head == nil {
+	if l.IsEmpty() {
 		return false
 	}
 	selectAction := func(each *ListNode) bool {

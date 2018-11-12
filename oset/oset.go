@@ -52,8 +52,12 @@ func (s *OSet) Delete(value interface{}) {
 	s.root = FixDeleteRBTree(s.root, node)
 }
 
+func (s *OSet) IsEmpty() bool {
+	return s.root == nil
+}
+
 func (s *OSet) Size() uint64 {
-	if s.root == nil {
+	if s.IsEmpty() {
 		return 0
 	}
 	return s.size
@@ -64,7 +68,7 @@ func (s *OSet) walk(visitor Visitor) {
 }
 
 func (s *OSet) Do(action func(each TreeNodeInterface)) {
-	if s.root == nil {
+	if s.IsEmpty() {
 		return
 	}
 	visitor := &DoVisitor{action}
@@ -92,7 +96,7 @@ func (s *OSet) Select(selectAction func(each TreeNodeInterface) bool) *OSet {
 }
 
 func (s *OSet) Includes(data interface{}) bool {
-	if s.root == nil {
+	if s.IsEmpty() {
 		return false
 	}
 	selectAction := func(each TreeNodeInterface) bool {
