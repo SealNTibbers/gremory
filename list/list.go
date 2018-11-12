@@ -39,6 +39,10 @@ func (node *ListNode) GetValue() interface{} {
 	return node.Data.GetValue()
 }
 
+func (l *List) IsEmpty() bool {
+	return l.head == nil
+}
+
 func (l *List) PushFront(data interface{}) {
 	if l.valueGenerator == nil {
 		return
@@ -48,7 +52,7 @@ func (l *List) PushFront(data interface{}) {
 
 func (l *List) pushFrontValueHolder(data CollectionObject) {
 	newNode := CreateNode(data)
-	if l.head == nil {
+	if l.IsEmpty() {
 		l.head = newNode
 		return
 	}
@@ -65,7 +69,7 @@ func (l *List) Delete(data interface{}) {
 }
 
 func (l *List) deleteCollectionObject(data CollectionObject) {
-	if l.head == nil {
+	if l.IsEmpty() {
 		return
 	}
 	currentElement := l.head
@@ -98,7 +102,7 @@ func (l *List) deleteCollectionObject(data CollectionObject) {
 
 func (l *List) DeleteAt(index uint64) {
 	listSize := l.Size()
-	if l.head == nil || index > listSize {
+	if l.IsEmpty() || index > listSize {
 		return
 	}
 	currentElement := l.head
@@ -130,7 +134,7 @@ func (l *List) DeleteAt(index uint64) {
 }
 
 func (l *List) DeleteAll() {
-	if l.head == nil {
+	if l.IsEmpty() {
 		return
 	}
 	l.head = nil
@@ -167,14 +171,14 @@ func (l *List) PopBack() interface{} {
 }
 
 func (l *List) Front() interface{} {
-	if l.head == nil {
+	if l.IsEmpty() {
 		return nil
 	}
 	return l.head.GetValue()
 }
 
 func (l *List) Back() interface{} {
-	if l.tail == nil {
+	if l.IsEmpty() {
 		return nil
 	}
 	return l.tail.GetValue()
@@ -188,7 +192,7 @@ func (l *List) PopFront() interface{} {
 }
 
 func (l *List) Size() uint64 {
-	if l.head == nil {
+	if l.IsEmpty() {
 		return 0
 	}
 	currentElement := l.head
@@ -201,7 +205,7 @@ func (l *List) Size() uint64 {
 }
 
 func (l *List) At(index uint64) interface{} {
-	if l.head == nil || index > l.Size() {
+	if l.IsEmpty() || index > l.Size() {
 		return nil
 	}
 	currentNode := l.head
@@ -223,7 +227,7 @@ func (l *List) InsertAt(data interface{}, index uint64) {
 
 func (l *List) insertAtCollectionObject(data CollectionObject, index uint64) {
 	listSize := l.Size()
-	if l.head == nil || index > listSize {
+	if l.IsEmpty() || index > listSize {
 		return
 	}
 	currentNode := l.head
@@ -253,7 +257,7 @@ func (l *List) insertAtCollectionObject(data CollectionObject, index uint64) {
 }
 
 func (l *List) ReverseDo(action func(each *ListNode)) {
-	if l.head == nil {
+	if l.IsEmpty() {
 		return
 	}
 	currentElement := l.tail
@@ -265,7 +269,7 @@ func (l *List) ReverseDo(action func(each *ListNode)) {
 }
 
 func (l *List) Do(action func(each *ListNode)) {
-	if l.head == nil {
+	if l.IsEmpty() {
 		return
 	}
 	currentElement := l.head
