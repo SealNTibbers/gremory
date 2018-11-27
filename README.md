@@ -49,7 +49,7 @@ To create a set you can use next code:
 
 
 ### Functions examples
-The next examples will be use List for presentation of functions because all containers have familiar way.
+The next examples will be use List for presentation of smalltalk-like functions because all containers have familiar way.
 #### Do
 This function is using for evaluate lambda with each of the elements as the argument:
 ```
