@@ -205,6 +205,14 @@ func (l *List) Size() uint64 {
 }
 
 func (l *List) At(index uint64) interface{} {
+	node := l.atNode(index)
+	if node == nil {
+		return nil
+	}
+	return node.Data.GetValue()
+}
+
+func (l *List) atNode(index uint64) *ListNode {
 	if l.IsEmpty() || index > l.Size() {
 		return nil
 	}
@@ -214,7 +222,7 @@ func (l *List) At(index uint64) interface{} {
 		currentNode = currentNode.next
 		counter = counter + 1
 	}
-	return currentNode.Data.GetValue()
+	return currentNode
 }
 
 func (l *List) InsertAt(data interface{}, index uint64) {
@@ -364,4 +372,16 @@ func (l *List) Includes(data interface{}) bool {
 	}
 	result := l.Select(selectAction)
 	return result.Size() > 0
+}
+
+func (l *List) SwapIndex(firstIndex uint64, secondIndex uint64) {
+	if firstIndex == secondIndex {
+		return
+	}
+	if firstIndex < 0 || firstIndex > l.Size()-1 || secondIndex > l.Size()-1 {
+		return
+	}
+	firstElement := l.atNode(firstIndex)
+	secondElement := l.atNode(secondIndex)
+	swapData(firstElement, secondElement)
 }

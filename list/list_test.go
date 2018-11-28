@@ -302,3 +302,53 @@ func TestWorkingWithTestType(t *testing.T) {
 		testutils.ASSERT_EQ(t, each.GetValue().(testutils.TestType).Name, expectedValues[0].Name)
 	})
 }
+
+func TestSwap(t *testing.T) {
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	list := NewSmartList(valueGen)
+	list.PushBack(1)
+	list.PushBack(2)
+	list.PushBack(3)
+	list.PushBack(4)
+	list.SwapIndex(0, 1)
+	counter := 0
+	expectedValues := []int{2, 1, 3, 4}
+	list.Do(func(each *ListNode) {
+		testutils.ASSERT_EQ(t, each.GetValue().(int), expectedValues[counter])
+		counter = counter + 1
+	})
+
+	list.SwapIndex(1, 0)
+	counter = 0
+	expectedValues = []int{1, 2, 3, 4}
+	list.Do(func(each *ListNode) {
+		testutils.ASSERT_EQ(t, each.GetValue().(int), expectedValues[counter])
+		counter = counter + 1
+	})
+
+	list.SwapIndex(4, 0)
+	counter = 0
+	expectedValues = []int{1, 2, 3, 4}
+	list.Do(func(each *ListNode) {
+		testutils.ASSERT_EQ(t, each.GetValue().(int), expectedValues[counter])
+		counter = counter + 1
+	})
+
+	list.SwapIndex(1, 1)
+	counter = 0
+	expectedValues = []int{1, 2, 3, 4}
+	list.Do(func(each *ListNode) {
+		testutils.ASSERT_EQ(t, each.GetValue().(int), expectedValues[counter])
+		counter = counter + 1
+	})
+
+	list.SwapIndex(2, 3)
+	counter = 0
+	expectedValues = []int{1, 2, 4, 3}
+	list.Do(func(each *ListNode) {
+		testutils.ASSERT_EQ(t, each.GetValue().(int), expectedValues[counter])
+		counter = counter + 1
+	})
+}
