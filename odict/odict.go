@@ -9,6 +9,20 @@ type ODict struct {
 	valueGenerator func(interface{}) CollectionObject
 }
 
+func NewReadyODict() *ODict {
+	keyGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	valueGen := func(value interface{}) CollectionObject {
+		return &ValueHolder{value}
+	}
+	odict := new(ODict)
+	odict.root = GetNilNode()
+	odict.keyGenerator = keyGen
+	odict.valueGenerator = valueGen
+	return odict
+}
+
 func NewSmartODict(keyGenerator func(interface{}) CollectionObject, valueGenerator func(interface{}) CollectionObject) *ODict {
 	odict := new(ODict)
 	odict.root = GetNilNode()
